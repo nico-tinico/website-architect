@@ -11,11 +11,14 @@ from website_architect.domain.enums import (
 from website_architect.domain.graph import SiteGraph
 from website_architect.domain.links import Link
 from website_architect.domain.nodes import Node
+from website_architect.domain.templates import Template
 
 
 def make_architecture(
+    *,
     nodes: tuple[Node, ...],
     links: tuple[Link, ...] = (),
+    templates: tuple[Template, ...] = (),
 ) -> SiteArchitecture:
     return SiteArchitecture(
         version="1.0",
@@ -24,7 +27,10 @@ def make_architecture(
         topology=Topology.HIERARCHICAL,
         root_id="home",
         nodes=nodes,
-        graph=SiteGraph(links=links),
+        templates=templates,
+        graph=SiteGraph(
+            links=links,
+        ),
     )
 
 
@@ -102,4 +108,145 @@ def test_validation_rejects_unknown_link_target() -> None:
     )
 
     with pytest.raises(ValueError, match="Link target"):
+        architecture.validate()
+
+
+def test_template_ids_must_be_unique() -> None:
+    template = Template(
+        id="product",
+        name="Product",
+        required=True,
+        repeatable=True,
+        purpose="Defines a product.",
+    )
+
+    architecture = make_architecture(
+        nodes=(
+            Node(
+                id="home",
+                name="Home",
+                node_type=NodeType.PAGE,
+                required=True,
+                repeatable=False,
+                purpose="Website home page.",
+                parent_id=None,
+                position=0,
+            ),
+        ),
+        templates=(template, template),
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="Duplicate template IDs",
+    ):
+        architecture.validate()
+
+
+def test_collection_item_template_must_exist() -> None:
+    architecture = make_architecture(
+        nodes=(
+            Node(
+                id="home",
+                name="Home",
+                node_type=NodeType.PAGE,
+                required=True,
+                repeatable=False,
+                purpose="Website home page.",
+                parent_id=None,
+                position=0,
+            ),
+            Node(
+                id="home.products",
+                name="Products",
+                node_type=NodeType.COLLECTION,
+                required=True,
+                repeatable=False,
+                purpose="Groups products.",
+                parent_id="home",
+                position=0,
+                item_template="product",
+            ),
+        ),
+        templates=(),
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="unknown item template",
+    ):
+        architecture.validate()
+
+
+def test_collection_item_template_can_resolve() -> None:
+    architecture = make_architecture(
+        nodes=(
+            Node(
+                id="home",
+                name="Home",
+                node_type=NodeType.PAGE,
+                required=True,
+                repeatable=False,
+                purpose="Website home page.",
+                parent_id=None,
+                position=0,
+            ),
+            Node(
+                id="home.products",
+                name="Products",
+                node_type=NodeType.COLLECTION,
+                required=True,
+                repeatable=False,
+                purpose="Groups products.",
+                parent_id="home",
+                position=0,
+                item_template="product",
+            ),
+        ),
+        templates=(
+            Template(
+                id="product",
+                name="Product",
+                required=True,
+                repeatable=True,
+                purpose="Defines a product.",
+            ),
+        ),
+    )
+
+    architecture.validate()
+
+
+def test_entry_point_target_template_must_exist() -> None:
+    architecture = make_architecture(
+        nodes=(
+            Node(
+                id="home",
+                name="Home",
+                node_type=NodeType.PAGE,
+                required=True,
+                repeatable=False,
+                purpose="Website home page.",
+                parent_id=None,
+                position=0,
+            ),
+            Node(
+                id="home.product",
+                name="Product",
+                node_type=NodeType.ENTRY_POINT,
+                required=True,
+                repeatable=False,
+                purpose="Provides access to products.",
+                parent_id="home",
+                position=0,
+                target_template="product",
+            ),
+        ),
+        templates=(),
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="unknown target template",
+    ):
         architecture.validate()

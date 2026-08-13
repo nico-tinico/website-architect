@@ -30,6 +30,7 @@ class NodeType(str, Enum):
     TEMPLATE = "template"
     COLLECTION = "collection"
     SECTION = "section"
+    ENTRY_POINT = "entry_point"
 
 
 class LinkType(str, Enum):

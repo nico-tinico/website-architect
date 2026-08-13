@@ -1,7 +1,12 @@
-from website_architect.domain.enums import LinkType, NodeType, SiteType, Topology
+from website_architect.domain.enums import (
+    LinkType,
+    NodeType,
+    SiteType,
+    Topology,
+)
 from website_architect.domain.nodes import PageDefinition
 
-from .definitions import LinkRule, SiteProfile, profile
+from .definitions import LinkRule, SiteProfile, TemplateDefinition, profile
 
 
 # ---------------------------------------------------------------------------
@@ -30,31 +35,13 @@ def page(
     *,
     purpose: str,
     required: bool = True,
-    repeatable: bool = False,
     children: tuple[PageDefinition, ...] = (),
 ) -> PageDefinition:
     return PageDefinition(
         name=name,
         node_type=NodeType.PAGE,
         required=required,
-        repeatable=repeatable,
-        purpose=purpose,
-        children=children,
-    )
-
-
-def template(
-    name: str,
-    *,
-    purpose: str,
-    required: bool = True,
-    children: tuple[PageDefinition, ...] = (),
-) -> PageDefinition:
-    return PageDefinition(
-        name=name,
-        node_type=NodeType.TEMPLATE,
-        required=required,
-        repeatable=True,
+        repeatable=False,
         purpose=purpose,
         children=children,
     )
@@ -64,6 +51,7 @@ def collection(
     name: str,
     *,
     purpose: str,
+    item_template: str,
     required: bool = True,
     children: tuple[PageDefinition, ...] = (),
 ) -> PageDefinition:
@@ -74,6 +62,38 @@ def collection(
         repeatable=False,
         purpose=purpose,
         children=children,
+        item_template=item_template,
+    )
+
+
+def template(
+    name: str,
+    *,
+    purpose: str,
+    required: bool = True,
+) -> TemplateDefinition:
+    return TemplateDefinition(
+        name=name,
+        required=required,
+        purpose=purpose,
+    )
+
+
+def entry_point(
+    name: str,
+    *,
+    purpose: str,
+    target_template: str,
+    required: bool = True,
+) -> PageDefinition:
+    return PageDefinition(
+        name=name,
+        node_type=NodeType.ENTRY_POINT,
+        required=required,
+        repeatable=False,
+        purpose=purpose,
+        children=(),
+        target_template=target_template,
     )
 
 
@@ -84,111 +104,98 @@ def collection(
 
 LANDING_PAGE = profile(
     site_type=SiteType.LANDING_PAGE,
-    topology=Topology.SEQUENTIAL,
+    default_topology=Topology.SEQUENTIAL,
     single_page=(
         section(
             "Hero",
-            purpose="Introduce the offering, communicate its primary value proposition, and drive the user's initial action.",
-        ),
-        section(
-            "Value Proposition",
-            purpose="Explain the primary value the offering provides and why it is relevant to the target audience.",
+            purpose=(
+                "Introduce the offering, establish the main value proposition, "
+                "and direct visitors toward the primary action."
+            ),
         ),
         section(
             "Problem",
-            required=False,
-            purpose="Describe the problem, need, or pain point that the offering addresses.",
+            purpose=(
+                "Explain the problem, need, or opportunity addressed by the offering."
+            ),
         ),
         section(
             "Solution",
-            purpose="Explain how the offering solves the problem and delivers the promised value.",
+            purpose=(
+                "Explain how the offering solves the problem and communicates "
+                "its core value."
+            ),
         ),
         section(
             "Features",
-            required=False,
-            purpose="Present the key capabilities and characteristics of the offering.",
-        ),
-        section(
-            "Benefits",
-            required=False,
-            purpose="Translate the offering's capabilities into concrete benefits for the user.",
+            purpose=(
+                "Present the main capabilities, characteristics, or benefits "
+                "of the offering."
+            ),
         ),
         section(
             "Social Proof",
-            required=False,
-            purpose="Build credibility by presenting evidence that other people or organizations trust the offering.",
-        ),
-        section(
-            "Testimonials",
-            required=False,
-            purpose="Provide direct customer feedback that reinforces trust and validates the offering.",
-        ),
-        section(
-            "Pricing",
-            required=False,
-            purpose="Communicate the cost and available purchasing or subscription options.",
+            purpose=(
+                "Build credibility through testimonials, customers, metrics, "
+                "logos, or other forms of evidence."
+            ),
         ),
         section(
             "FAQ",
             required=False,
-            purpose="Address common questions and remove uncertainty before the user's decision.",
+            purpose=(
+                "Resolve common questions or objections that may prevent "
+                "visitors from taking action."
+            ),
         ),
         section(
             "CTA",
-            purpose="Provide a clear final action that moves the user toward conversion.",
+            purpose=(
+                "Provide the primary conversion opportunity and guide visitors "
+                "toward the desired action."
+            ),
         ),
     ),
     multi_page=(
         page(
-            "Product",
-            required=False,
-            purpose="Present the offering in greater detail and explain its capabilities and value.",
+            "Home",
+            purpose="Introduce the offering and communicate its primary value proposition.",
         ),
         page(
             "Features",
-            required=False,
-            purpose="Provide a dedicated overview of the offering's key features and capabilities.",
-        ),
-        page(
-            "Pricing",
-            required=False,
-            purpose="Present pricing options and help users understand the commercial model.",
+            purpose="Present the main capabilities and benefits of the offering.",
         ),
         page(
             "About",
             required=False,
-            purpose="Explain who is behind the offering and establish organizational credibility.",
+            purpose="Explain the company, project, or organization behind the offering.",
         ),
         page(
             "FAQ",
             required=False,
-            purpose="Answer common questions and address objections or uncertainty.",
+            purpose="Answer common questions and address visitor objections.",
         ),
         page(
             "Contact",
-            required=False,
-            purpose="Provide a way for users to initiate direct communication with the organization.",
+            purpose="Provide a direct way for visitors to contact the organization.",
         ),
     ),
     single_page_links=(
-        LinkRule("Hero", "Value Proposition", LinkType.NAVIGATION),
-        LinkRule("Value Proposition", "Solution", LinkType.NAVIGATION),
+        LinkRule("Hero", "Problem", LinkType.NAVIGATION),
+        LinkRule("Problem", "Solution", LinkType.NAVIGATION),
         LinkRule("Solution", "Features", LinkType.NAVIGATION),
         LinkRule("Features", "Social Proof", LinkType.NAVIGATION),
-        LinkRule("Social Proof", "Pricing", LinkType.NAVIGATION),
-        LinkRule("Pricing", "FAQ", LinkType.NAVIGATION),
+        LinkRule("Social Proof", "FAQ", LinkType.NAVIGATION),
         LinkRule("FAQ", "CTA", LinkType.NAVIGATION),
         LinkRule("Hero", "CTA", LinkType.CTA),
-        LinkRule("Pricing", "CTA", LinkType.CTA),
     ),
     multi_page_links=(
-        LinkRule("Home", "Product", LinkType.NAVIGATION),
         LinkRule("Home", "Features", LinkType.NAVIGATION),
-        LinkRule("Home", "Pricing", LinkType.NAVIGATION),
         LinkRule("Home", "About", LinkType.NAVIGATION),
+        LinkRule("Home", "FAQ", LinkType.NAVIGATION),
         LinkRule("Home", "Contact", LinkType.NAVIGATION),
-        LinkRule("Product", "Contact", LinkType.CTA),
-        LinkRule("Pricing", "Contact", LinkType.CTA),
+        LinkRule("Features", "Contact", LinkType.CTA),
+        LinkRule("About", "Contact", LinkType.CTA),
     ),
 )
 
@@ -198,168 +205,152 @@ LANDING_PAGE = profile(
 # ---------------------------------------------------------------------------
 
 
+SAAS_TEMPLATES = (
+    template(
+        "Article",
+        purpose=(
+            "Present an individual resource article, guide, or editorial "
+            "piece published by the SaaS company."
+        ),
+    ),
+)
+
+
 SAAS = profile(
     site_type=SiteType.SAAS,
-    topology=Topology.HIERARCHICAL,
+    default_topology=Topology.HIERARCHICAL,
     single_page=(
         section(
             "Hero",
-            purpose="Introduce the SaaS product, communicate its core value, and drive users toward adoption.",
+            purpose=(
+                "Communicate the SaaS product's value proposition and drive "
+                "visitors toward the primary conversion action."
+            ),
         ),
         section(
-            "Product Overview",
-            purpose="Explain what the product does, who it serves, and the primary value it provides.",
+            "Product",
+            purpose=(
+                "Explain the product and how its core capabilities solve "
+                "customer problems."
+            ),
         ),
         section(
             "Features",
-            purpose="Present the product's main capabilities and explain how they support user needs.",
+            purpose=(
+                "Present the product's main features and functional capabilities."
+            ),
         ),
         section(
-            "Integrations",
+            "Solutions",
             required=False,
-            purpose="Show how the product connects with external tools, platforms, or services.",
-        ),
-        section(
-            "Security",
-            required=False,
-            purpose="Explain how the product protects user data, systems, and business information.",
-        ),
-        section(
-            "Use Cases",
-            required=False,
-            purpose="Demonstrate how different users, teams, or organizations can apply the product.",
-        ),
-        section(
-            "Testimonials",
-            required=False,
-            purpose="Provide customer evidence that validates the product's value and reliability.",
+            purpose=(
+                "Explain how the product addresses the needs of different "
+                "customer segments or use cases."
+            ),
         ),
         section(
             "Pricing",
-            purpose="Present subscription or commercial plans and help users evaluate the available options.",
+            purpose=(
+                "Communicate pricing plans and help users select the appropriate "
+                "commercial offering."
+            ),
         ),
         section(
-            "FAQ",
+            "Social Proof",
             required=False,
-            purpose="Answer common product, pricing, implementation, and purchasing questions.",
+            purpose=(
+                "Build trust through customer evidence, testimonials, logos, "
+                "or measurable outcomes."
+            ),
         ),
         section(
             "CTA",
-            purpose="Drive users toward starting a trial, creating an account, booking a demo, or taking another conversion action.",
+            purpose=(
+                "Convert visitors into trial users, customers, or qualified leads."
+            ),
         ),
     ),
     multi_page=(
         page(
+            "Home",
+            purpose="Introduce the SaaS product and communicate its core value proposition.",
+        ),
+        page(
             "Product",
-            purpose="Provide a dedicated area describing the SaaS product and its capabilities.",
-            children=(
-                page(
-                    "Overview",
-                    purpose="Explain the product's core value, functionality, and positioning.",
-                ),
-                page(
-                    "Features",
-                    purpose="Provide detailed information about the product's capabilities.",
-                ),
-                page(
-                    "Integrations",
-                    required=False,
-                    purpose="Document supported integrations and explain how the product connects with external systems.",
-                ),
-                page(
-                    "Security",
-                    required=False,
-                    purpose="Explain the product's security architecture, practices, and protections.",
-                ),
-            ),
+            purpose="Provide a detailed explanation of the SaaS product and its capabilities.",
+        ),
+        page(
+            "Features",
+            purpose="Present the main features and functional capabilities of the product.",
         ),
         page(
             "Solutions",
             required=False,
-            purpose="Organize product applications around the needs of different customer segments.",
-            children=(
-                page(
-                    "Startups",
-                    purpose="Explain how the product addresses the needs and constraints of startups.",
-                ),
-                page(
-                    "Teams",
-                    purpose="Explain how the product supports collaborative teams and their workflows.",
-                ),
-                page(
-                    "Enterprise",
-                    purpose="Explain how the product addresses enterprise-scale requirements and organizational complexity.",
-                ),
-            ),
+            purpose="Present solutions for different customer segments or use cases.",
         ),
         page(
             "Pricing",
-            purpose="Present subscription plans, pricing options, and commercial differences between tiers.",
+            purpose="Present pricing plans and commercial options.",
         ),
         page(
             "Resources",
             required=False,
-            purpose="Provide educational, informational, and product-supporting resources.",
+            purpose="Provide educational, editorial, and product-related resources.",
             children=(
                 page(
                     "Blog",
-                    purpose="Publish ongoing articles, insights, announcements, and educational content.",
-                ),
-                page(
-                    "Documentation",
-                    purpose="Provide detailed technical and product documentation for users and developers.",
+                    required=False,
+                    purpose="Publish company and industry articles.",
                 ),
                 page(
                     "Guides",
-                    purpose="Provide practical guidance for using the product or solving specific problems.",
-                ),
-                page(
-                    "Changelog",
-                    purpose="Communicate product updates, releases, improvements, and changes.",
+                    required=False,
+                    purpose="Provide educational guides and practical resources.",
                 ),
             ),
         ),
         page(
             "Company",
             required=False,
-            purpose="Provide information about the organization behind the product.",
+            purpose="Provide information about the company behind the SaaS product.",
             children=(
                 page(
                     "About",
-                    purpose="Explain the organization's identity, mission, and background.",
+                    purpose="Explain the company, mission, and organization.",
                 ),
                 page(
                     "Careers",
-                    purpose="Present employment opportunities and information for potential candidates.",
+                    required=False,
+                    purpose="Present open roles and employment opportunities.",
                 ),
                 page(
                     "Contact",
-                    purpose="Provide a way for users and prospects to communicate directly with the organization.",
+                    required=False,
+                    purpose="Provide a way to contact the company.",
                 ),
             ),
         ),
         page(
             "Login",
-            purpose="Allow existing users to access their product account.",
+            purpose="Allow existing users to access their SaaS account.",
         ),
         page(
             "Signup",
-            purpose="Allow new users to create an account and begin using the product.",
+            purpose="Allow new users to create an account or start using the product.",
         ),
     ),
     single_page_links=(
-        LinkRule("Hero", "Product Overview", LinkType.NAVIGATION),
-        LinkRule("Product Overview", "Features", LinkType.NAVIGATION),
-        LinkRule("Features", "Integrations", LinkType.NAVIGATION),
-        LinkRule("Features", "Security", LinkType.NAVIGATION),
-        LinkRule("Security", "Pricing", LinkType.NAVIGATION),
-        LinkRule("Pricing", "FAQ", LinkType.NAVIGATION),
-        LinkRule("FAQ", "CTA", LinkType.NAVIGATION),
+        LinkRule("Hero", "Product", LinkType.NAVIGATION),
+        LinkRule("Product", "Features", LinkType.NAVIGATION),
+        LinkRule("Features", "Solutions", LinkType.NAVIGATION),
+        LinkRule("Solutions", "Pricing", LinkType.NAVIGATION),
+        LinkRule("Pricing", "Social Proof", LinkType.NAVIGATION),
+        LinkRule("Social Proof", "CTA", LinkType.NAVIGATION),
         LinkRule("Hero", "CTA", LinkType.CTA),
-        LinkRule("Pricing", "CTA", LinkType.CTA),
     ),
     multi_page_links=(
         LinkRule("Home", "Product", LinkType.NAVIGATION),
+        LinkRule("Home", "Features", LinkType.NAVIGATION),
         LinkRule("Home", "Solutions", LinkType.NAVIGATION),
         LinkRule("Home", "Pricing", LinkType.NAVIGATION),
         LinkRule("Home", "Resources", LinkType.NAVIGATION),
@@ -368,8 +359,8 @@ SAAS = profile(
         LinkRule("Product", "Signup", LinkType.CTA),
         LinkRule("Pricing", "Signup", LinkType.CTA),
         LinkRule("Solutions", "Signup", LinkType.CTA),
-        LinkRule("Company", "Company.Contact", LinkType.NAVIGATION),
     ),
+    templates=SAAS_TEMPLATES,
 )
 
 
@@ -378,138 +369,125 @@ SAAS = profile(
 # ---------------------------------------------------------------------------
 
 
+AGENCY_TEMPLATES = (
+    template(
+        "Service",
+        purpose=(
+            "Present an individual agency service, its capabilities, value, "
+            "and relevance to client needs."
+        ),
+    ),
+    template(
+        "Case Study",
+        purpose=(
+            "Present an individual client project, including its context, "
+            "approach, solution, and outcomes."
+        ),
+    ),
+)
+
+
 AGENCY = profile(
     site_type=SiteType.AGENCY,
-    topology=Topology.HIERARCHICAL,
+    default_topology=Topology.MATRIX,
     single_page=(
         section(
             "Hero",
-            purpose="Introduce the agency, communicate its positioning, and drive visitors toward engagement.",
+            purpose="Introduce the agency and communicate its core positioning and value.",
         ),
         section(
             "Services",
-            purpose="Present the agency's capabilities and the services it provides to clients.",
+            purpose="Present the agency's primary services and capabilities.",
         ),
         section(
             "Work",
-            purpose="Showcase selected client work and demonstrate the agency's capabilities through outcomes.",
-        ),
-        section(
-            "About",
-            purpose="Explain the agency's identity, expertise, background, and approach.",
+            purpose="Showcase selected projects and demonstrate the agency's capabilities.",
         ),
         section(
             "Process",
             required=False,
-            purpose="Explain how the agency works with clients from initial engagement through delivery.",
+            purpose="Explain how the agency approaches projects and collaborates with clients.",
         ),
         section(
-            "Clients",
-            required=False,
-            purpose="Demonstrate the organizations and brands that have worked with the agency.",
+            "About",
+            purpose="Present the agency, its team, values, and positioning.",
         ),
         section(
             "Testimonials",
             required=False,
-            purpose="Provide client feedback that reinforces trust and demonstrates the quality of the agency's work.",
+            purpose="Provide client feedback and social proof.",
         ),
         section(
-            "Team",
-            required=False,
-            purpose="Introduce the people responsible for delivering the agency's expertise and services.",
-        ),
-        section(
-            "FAQ",
-            required=False,
-            purpose="Address common questions about services, process, pricing, and collaboration.",
-        ),
-        section(
-            "Contact",
-            purpose="Provide a direct path for prospective clients to initiate a conversation with the agency.",
+            "CTA",
+            purpose="Encourage visitors to start a conversation or project.",
         ),
     ),
     multi_page=(
         page(
+            "Home",
+            purpose="Introduce the agency and communicate its positioning.",
+        ),
+        page(
             "Services",
-            purpose="Present the agency's service offering and areas of expertise.",
+            purpose="Present the agency's service offering.",
             children=(
-                template(
+                collection(
                     "Service",
-                    purpose="Provide a reusable structure for presenting an individual agency service.",
+                    purpose="Organize the agency's individual service offerings.",
+                    item_template="Service",
                 ),
             ),
+        ),
+        entry_point(
+            "Service",
+            purpose="Provide direct access to individual service pages.",
+            target_template="Service",
         ),
         page(
             "Work",
-            purpose="Organize and showcase the agency's portfolio of client work.",
+            purpose="Showcase the agency's portfolio of client work.",
             children=(
-                template(
-                    "Case Study",
-                    purpose="Present an individual project, its context, approach, and results.",
+                collection(
+                    "Case Studies",
+                    purpose="Organize individual client projects and case studies.",
+                    item_template="Case Study",
                 ),
             ),
+        ),
+        entry_point(
+            "Case Study",
+            purpose="Provide direct access to individual case study pages.",
+            target_template="Case Study",
         ),
         page(
             "About",
-            purpose="Explain the agency's identity, values, expertise, and operating approach.",
-            children=(
-                page(
-                    "Team",
-                    required=False,
-                    purpose="Introduce the agency's team and individual areas of expertise.",
-                ),
-                page(
-                    "Process",
-                    required=False,
-                    purpose="Explain the agency's methodology and collaboration process.",
-                ),
-                page(
-                    "Values",
-                    required=False,
-                    purpose="Communicate the principles and values that guide the agency's work.",
-                ),
-            ),
-        ),
-        page(
-            "Insights",
-            required=False,
-            purpose="Publish knowledge, perspectives, and educational content that demonstrates the agency's expertise.",
-            children=(
-                page(
-                    "Blog",
-                    required=False,
-                    purpose="Publish ongoing agency perspectives, articles, and insights.",
-                ),
-                page(
-                    "Articles",
-                    required=False,
-                    purpose="Provide deeper editorial content focused on relevant topics and expertise.",
-                ),
-            ),
+            purpose="Present the agency, its team, values, and positioning.",
         ),
         page(
             "Contact",
-            purpose="Provide a direct communication channel for prospective and existing clients.",
+            purpose="Provide a way for prospective clients to contact the agency.",
         ),
     ),
     single_page_links=(
         LinkRule("Hero", "Services", LinkType.NAVIGATION),
         LinkRule("Services", "Work", LinkType.NAVIGATION),
-        LinkRule("Work", "About", LinkType.NAVIGATION),
+        LinkRule("Work", "Process", LinkType.NAVIGATION),
+        LinkRule("Process", "About", LinkType.NAVIGATION),
         LinkRule("About", "Testimonials", LinkType.NAVIGATION),
-        LinkRule("Testimonials", "Contact", LinkType.NAVIGATION),
-        LinkRule("Hero", "Contact", LinkType.CTA),
-        LinkRule("Work", "Contact", LinkType.CTA),
+        LinkRule("Testimonials", "CTA", LinkType.NAVIGATION),
+        LinkRule("Hero", "CTA", LinkType.CTA),
     ),
     multi_page_links=(
         LinkRule("Home", "Services", LinkType.NAVIGATION),
         LinkRule("Home", "Work", LinkType.NAVIGATION),
         LinkRule("Home", "About", LinkType.NAVIGATION),
-        LinkRule("Home", "Insights", LinkType.NAVIGATION),
         LinkRule("Home", "Contact", LinkType.NAVIGATION),
-        LinkRule("Services", "Contact", LinkType.CTA),
-        LinkRule("Work", "Contact", LinkType.CTA),
+        LinkRule("Services", "Service", LinkType.NAVIGATION),
+        LinkRule("Work", "Case Study", LinkType.NAVIGATION),
+        LinkRule("Service", "Contact", LinkType.CTA),
+        LinkRule("Case Study", "Contact", LinkType.CTA),
     ),
+    templates=AGENCY_TEMPLATES,
 )
 
 
@@ -518,75 +496,76 @@ AGENCY = profile(
 # ---------------------------------------------------------------------------
 
 
+PORTFOLIO_TEMPLATES = (
+    template(
+        "Project",
+        purpose=(
+            "Present an individual portfolio project, including its context, "
+            "role, process, and outcome."
+        ),
+    ),
+)
+
+
 PORTFOLIO = profile(
     site_type=SiteType.PORTFOLIO,
-    topology=Topology.SEQUENTIAL,
+    default_topology=Topology.SEQUENTIAL,
     single_page=(
         section(
             "Hero",
-            purpose="Introduce the creator or professional and communicate their primary positioning and expertise.",
+            purpose="Introduce the portfolio owner and establish their professional positioning.",
         ),
         section(
             "About",
-            purpose="Provide background information about the creator, professional, or studio.",
+            purpose="Present the portfolio owner, background, skills, and professional identity.",
         ),
         section(
             "Selected Work",
-            purpose="Showcase the most relevant projects and demonstrate the creator's capabilities.",
+            purpose="Showcase representative projects and demonstrate capabilities.",
         ),
         section(
             "Skills",
             required=False,
-            purpose="Present the creator's core skills, capabilities, and areas of expertise.",
+            purpose="Present the main skills, disciplines, or technologies of the portfolio owner.",
         ),
         section(
             "Experience",
             required=False,
-            purpose="Summarize relevant professional experience, roles, and career background.",
-        ),
-        section(
-            "Testimonials",
-            required=False,
-            purpose="Provide feedback from clients, collaborators, or employers to reinforce credibility.",
+            purpose="Present relevant professional experience and career history.",
         ),
         section(
             "Contact",
-            purpose="Provide a direct way for visitors to initiate professional communication.",
+            purpose="Provide a way for visitors to start a professional conversation.",
         ),
     ),
     multi_page=(
         page(
+            "Home",
+            purpose="Introduce the portfolio owner and highlight selected work.",
+        ),
+        page(
             "Work",
-            purpose="Provide a dedicated portfolio of projects and professional work.",
+            purpose="Present the portfolio owner's projects.",
             children=(
-                template(
-                    "Project",
-                    purpose="Present an individual project, its context, contribution, process, and outcome.",
+                collection(
+                    "Projects",
+                    purpose="Organize the portfolio's individual projects.",
+                    item_template="Project",
                 ),
             ),
         ),
+        entry_point(
+            "Project",
+            purpose="Provide direct access to individual portfolio project pages.",
+            target_template="Project",
+        ),
         page(
             "About",
-            purpose="Explain the creator's identity, background, positioning, and professional profile.",
-        ),
-        page(
-            "Experience",
-            required=False,
-            purpose="Present the creator's professional history, roles, and relevant experience.",
-        ),
-        page(
-            "Skills",
-            required=False,
-            purpose="Present the creator's professional skills and areas of expertise.",
-        ),
-        page(
-            "Journal",
-            required=False,
-            purpose="Publish personal insights, writing, experiments, or professional reflections.",
+            purpose="Present the portfolio owner's background, identity, and professional positioning.",
         ),
         page(
             "Contact",
-            purpose="Provide a direct channel for professional inquiries and collaboration.",
+            purpose="Provide a way to contact the portfolio owner.",
         ),
     ),
     single_page_links=(
@@ -594,20 +573,17 @@ PORTFOLIO = profile(
         LinkRule("About", "Selected Work", LinkType.NAVIGATION),
         LinkRule("Selected Work", "Skills", LinkType.NAVIGATION),
         LinkRule("Skills", "Experience", LinkType.NAVIGATION),
-        LinkRule("Experience", "Testimonials", LinkType.NAVIGATION),
-        LinkRule("Testimonials", "Contact", LinkType.NAVIGATION),
-        LinkRule("Hero", "Selected Work", LinkType.CTA),
-        LinkRule("Selected Work", "Contact", LinkType.CTA),
+        LinkRule("Experience", "Contact", LinkType.NAVIGATION),
+        LinkRule("Hero", "Contact", LinkType.CTA),
     ),
     multi_page_links=(
         LinkRule("Home", "Work", LinkType.NAVIGATION),
         LinkRule("Home", "About", LinkType.NAVIGATION),
-        LinkRule("Home", "Experience", LinkType.NAVIGATION),
-        LinkRule("Home", "Skills", LinkType.NAVIGATION),
-        LinkRule("Home", "Journal", LinkType.NAVIGATION),
         LinkRule("Home", "Contact", LinkType.NAVIGATION),
-        LinkRule("Work", "Contact", LinkType.CTA),
+        LinkRule("Work", "Project", LinkType.NAVIGATION),
+        LinkRule("Project", "Contact", LinkType.CTA),
     ),
+    templates=PORTFOLIO_TEMPLATES,
 )
 
 
@@ -616,110 +592,170 @@ PORTFOLIO = profile(
 # ---------------------------------------------------------------------------
 
 
+ECOMMERCE_TEMPLATES = (
+    template(
+        "Product",
+        purpose=(
+            "Present an individual product and support product evaluation "
+            "and purchase."
+        ),
+    ),
+    template(
+        "Collection",
+        purpose=(
+            "Present a curated group of products around a common theme "
+            "or merchandising concept."
+        ),
+    ),
+)
+
+
 ECOMMERCE = profile(
     site_type=SiteType.ECOMMERCE,
-    topology=Topology.MATRIX,
+    default_topology=Topology.MATRIX,
     single_page=(
         section(
             "Hero",
-            purpose="Introduce the store, establish the brand proposition, and direct users toward product discovery.",
+            purpose=(
+                "Introduce the store, establish the brand proposition, "
+                "and direct users toward product discovery."
+            ),
         ),
         section(
             "Featured Products",
-            purpose="Highlight selected products that the store wants users to discover or consider.",
+            purpose=(
+                "Highlight selected products that the store wants users "
+                "to discover or consider."
+            ),
         ),
         section(
             "Categories",
-            purpose="Help users discover products through the store's main product categories.",
+            purpose=(
+                "Help users discover products through the store's main "
+                "product categories."
+            ),
         ),
         section(
             "Collections",
             required=False,
-            purpose="Present curated groups of products organized around themes, campaigns, or merchandising concepts.",
+            purpose=(
+                "Present curated groups of products organized around "
+                "themes, campaigns, or merchandising concepts."
+            ),
         ),
         section(
             "Best Sellers",
             required=False,
-            purpose="Highlight products with strong demand or popularity to guide product discovery.",
+            purpose=(
+                "Highlight products with strong demand or popularity "
+                "to guide product discovery."
+            ),
         ),
         section(
             "New Arrivals",
             required=False,
-            purpose="Showcase recently introduced products and encourage users to explore new inventory.",
+            purpose=(
+                "Showcase recently introduced products and encourage "
+                "users to explore new inventory."
+            ),
         ),
         section(
             "Offers",
             required=False,
-            purpose="Communicate promotions, discounts, or commercial opportunities available to shoppers.",
+            purpose=(
+                "Communicate promotions, discounts, or commercial "
+                "opportunities available to shoppers."
+            ),
         ),
         section(
             "Reviews",
             required=False,
-            purpose="Provide customer feedback and social proof to support product evaluation and purchasing decisions.",
+            purpose=(
+                "Provide customer feedback and social proof to support "
+                "product evaluation and purchasing decisions."
+            ),
         ),
         section(
             "CTA",
-            purpose="Direct users toward shopping, product discovery, or another primary commercial action.",
+            purpose=(
+                "Direct users toward shopping, product discovery, "
+                "or another primary commercial action."
+            ),
         ),
     ),
     multi_page=(
         page(
             "Shop",
-            purpose="Provide the main product discovery and browsing experience for the store.",
+            purpose=(
+                "Provide the main product discovery and browsing "
+                "experience for the store."
+            ),
             children=(
                 collection(
                     "Category",
-                    purpose="Organize products into meaningful categories to support browsing and discovery.",
-                    children=(
-                        template(
-                            "Product",
-                            purpose="Present an individual product, its information, options, and purchasing actions.",
-                        ),
+                    purpose=(
+                        "Organize products into meaningful categories "
+                        "for browsing and discovery."
                     ),
+                    item_template="Product",
                 ),
                 collection(
                     "Collections",
                     required=False,
-                    purpose="Organize curated groups of products around themes, campaigns, or merchandising strategies.",
-                    children=(
-                        template(
-                            "Collection",
-                            purpose="Present a curated group of products around a common theme or merchandising concept.",
-                        ),
+                    purpose=(
+                        "Organize curated groups of products around "
+                        "themes, campaigns, or merchandising strategies."
                     ),
+                    item_template="Collection",
                 ),
                 page(
                     "Search",
                     required=False,
-                    purpose="Allow users to search, filter, and discover products across the catalog.",
+                    purpose=(
+                        "Allow users to search, filter, and discover "
+                        "products across the catalog."
+                    ),
                 ),
             ),
         ),
-        template(
+        entry_point(
             "Product",
-            purpose="Present an individual product and support product evaluation and purchase.",
+            purpose="Provide direct access to individual product pages.",
+            target_template="Product",
         ),
         page(
             "Wishlist",
             required=False,
-            purpose="Allow users to save and revisit products they are interested in purchasing.",
+            purpose=(
+                "Allow users to save and revisit products they are "
+                "interested in purchasing."
+            ),
         ),
         page(
             "Cart",
-            purpose="Review selected products, quantities, prices, and prepare the order for checkout.",
+            purpose=(
+                "Review selected products, quantities, prices, "
+                "and prepare the order for checkout."
+            ),
         ),
         page(
             "Checkout",
-            purpose="Complete the purchase by collecting order, shipping, billing, and payment information.",
+            purpose=(
+                "Complete the purchase by collecting order, shipping, "
+                "billing, and payment information."
+            ),
         ),
         page(
             "Account",
             required=False,
-            purpose="Provide authenticated users with access to their profile, orders, addresses, and account settings.",
+            purpose=(
+                "Provide authenticated users with access to their profile, "
+                "orders, addresses, and account settings."
+            ),
             children=(
                 page(
                     "Profile",
-                    purpose="Allow users to view and manage their personal account information.",
+                    purpose="Allow users to view and manage personal account information.",
                 ),
                 page(
                     "Orders",
@@ -727,19 +763,25 @@ ECOMMERCE = profile(
                 ),
                 page(
                     "Addresses",
-                    purpose="Allow users to manage their saved shipping and billing addresses.",
+                    purpose="Allow users to manage saved shipping and billing addresses.",
                 ),
             ),
         ),
         page(
             "Journal",
             required=False,
-            purpose="Publish editorial content, brand stories, product inspiration, or other content supporting the shopping experience.",
+            purpose=(
+                "Publish editorial content, brand stories, product "
+                "inspiration, or other content supporting the shopping experience."
+            ),
         ),
         page(
             "Support",
             required=False,
-            purpose="Provide assistance and information for customers before, during, or after a purchase.",
+            purpose=(
+                "Provide assistance and information for customers before, "
+                "during, or after a purchase."
+            ),
         ),
     ),
     single_page_links=(
@@ -755,17 +797,19 @@ ECOMMERCE = profile(
     ),
     multi_page_links=(
         LinkRule("Home", "Shop", LinkType.NAVIGATION),
+        LinkRule("Home", "Product", LinkType.NAVIGATION),
         LinkRule("Home", "Wishlist", LinkType.NAVIGATION),
         LinkRule("Home", "Cart", LinkType.NAVIGATION),
         LinkRule("Home", "Account", LinkType.NAVIGATION),
         LinkRule("Home", "Journal", LinkType.NAVIGATION),
-        LinkRule("Shop", "Shop.Category.Product", LinkType.NAVIGATION),
-        LinkRule("Shop.Category.Product", "Wishlist", LinkType.CTA),
-        LinkRule("Shop.Category.Product", "Cart", LinkType.CTA),
+        LinkRule("Shop", "Product", LinkType.NAVIGATION),
+        LinkRule("Product", "Wishlist", LinkType.CTA),
+        LinkRule("Product", "Cart", LinkType.CTA),
         LinkRule("Cart", "Checkout", LinkType.NAVIGATION),
         LinkRule("Checkout", "Account", LinkType.NAVIGATION),
         LinkRule("Journal", "Shop", LinkType.CTA),
     ),
+    templates=ECOMMERCE_TEMPLATES,
 )
 
 
@@ -774,184 +818,148 @@ ECOMMERCE = profile(
 # ---------------------------------------------------------------------------
 
 
+TRAVEL_TEMPLATES = (
+    template(
+        "Destination",
+        purpose=(
+            "Present an individual destination, its highlights, places, "
+            "and practical travel information."
+        ),
+    ),
+    template(
+        "Experience",
+        purpose=(
+            "Present an individual travel experience, its details, value, "
+            "and participation or booking information."
+        ),
+    ),
+    template(
+        "Itinerary",
+        purpose=(
+            "Present an individual travel itinerary with its sequence "
+            "of destinations and activities."
+        ),
+    ),
+)
+
+
 TRAVEL = profile(
     site_type=SiteType.TRAVEL,
-    topology=Topology.MATRIX,
+    default_topology=Topology.MATRIX,
     single_page=(
         section(
             "Hero",
-            purpose="Introduce the travel offering and inspire users to explore destinations and experiences.",
+            purpose="Introduce the travel offering and inspire destination discovery.",
         ),
         section(
-            "Destination",
-            purpose="Present a featured destination and communicate its primary attractions and value.",
+            "Destinations",
+            purpose="Highlight destinations and encourage visitors to explore them.",
         ),
         section(
             "Experiences",
-            purpose="Showcase activities, experiences, and things users can do within the destination.",
+            purpose="Present selected travel experiences and activities.",
         ),
         section(
-            "Highlights",
-            purpose="Surface the most important or memorable aspects of the destination or travel offering.",
-        ),
-        section(
-            "Itinerary",
+            "Itineraries",
             required=False,
-            purpose="Present a suggested sequence of activities, destinations, or travel experiences.",
+            purpose="Present curated travel itineraries and journeys.",
         ),
         section(
-            "Accommodation",
+            "Inspiration",
             required=False,
-            purpose="Present available places to stay and relevant accommodation information.",
+            purpose="Provide editorial content and inspiration for travel planning.",
         ),
         section(
-            "Gallery",
-            required=False,
-            purpose="Provide visual inspiration and contextual imagery for destinations and experiences.",
-        ),
-        section(
-            "Reviews",
-            required=False,
-            purpose="Provide traveler feedback and social proof to build confidence in the travel offering.",
-        ),
-        section(
-            "FAQ",
-            required=False,
-            purpose="Address common questions about destinations, experiences, logistics, and booking.",
-        ),
-        section(
-            "Booking CTA",
-            purpose="Drive users toward booking, inquiry, or another travel conversion action.",
+            "CTA",
+            purpose="Guide visitors toward planning, booking, or exploring a trip.",
         ),
     ),
     multi_page=(
         page(
+            "Home",
+            purpose="Introduce the travel offering and inspire visitors to explore.",
+        ),
+        page(
             "Destinations",
-            purpose="Provide the main discovery experience for exploring available travel destinations.",
+            purpose="Provide access to the available destinations.",
             children=(
                 collection(
                     "Destination",
-                    purpose="Organize and present individual destinations available to travelers.",
-                    children=(
-                        page(
-                            "Overview",
-                            purpose="Present the destination's essential information, highlights, and positioning.",
-                        ),
-                        collection(
-                            "Places",
-                            required=False,
-                            purpose="Organize notable places, attractions, and points of interest within a destination.",
-                        ),
-                        collection(
-                            "Experiences",
-                            required=False,
-                            purpose="Organize activities and experiences available within a destination.",
-                        ),
-                        collection(
-                            "Accommodation",
-                            required=False,
-                            purpose="Organize accommodation options available within a destination.",
-                        ),
-                        collection(
-                            "Itineraries",
-                            required=False,
-                            purpose="Organize suggested travel itineraries associated with a destination.",
-                        ),
-                    ),
+                    purpose="Organize individual travel destinations.",
+                    item_template="Destination",
                 ),
             ),
         ),
+        entry_point(
+            "Destination",
+            purpose="Provide direct access to individual destination pages.",
+            target_template="Destination",
+        ),
         page(
             "Experiences",
-            purpose="Provide a dedicated discovery area for travel experiences and activities.",
+            purpose="Provide access to available travel experiences.",
             children=(
-                template(
-                    "Experience",
-                    purpose="Present an individual travel experience, its details, value, and booking information.",
-                ),
                 collection(
-                    "Categories",
-                    required=False,
-                    purpose="Organize travel experiences into meaningful categories for discovery.",
+                    "Experience",
+                    purpose="Organize individual travel experiences and activities.",
+                    item_template="Experience",
                 ),
             ),
+        ),
+        entry_point(
+            "Experience",
+            purpose="Provide direct access to individual experience pages.",
+            target_template="Experience",
         ),
         page(
             "Itineraries",
             required=False,
-            purpose="Provide structured travel plans that combine destinations, activities, and timing.",
+            purpose="Present curated travel itineraries.",
             children=(
-                template(
+                collection(
                     "Itinerary",
-                    purpose="Present an individual travel itinerary with its sequence of destinations and activities.",
+                    purpose="Organize individual travel itineraries.",
+                    item_template="Itinerary",
                 ),
             ),
+        ),
+        entry_point(
+            "Itinerary",
+            required=False,
+            purpose="Provide direct access to individual itinerary pages.",
+            target_template="Itinerary",
         ),
         page(
             "Journal",
             required=False,
-            purpose="Publish travel stories, inspiration, guides, and editorial content.",
-        ),
-        page(
-            "About",
-            required=False,
-            purpose="Explain the organization, brand, or people behind the travel offering.",
+            purpose="Publish travel stories, guides, inspiration, and editorial content.",
         ),
         page(
             "Contact",
             required=False,
-            purpose="Provide a direct channel for travel inquiries, assistance, and communication.",
-        ),
-        page(
-            "Booking",
-            purpose="Allow users to initiate or complete a booking for a travel offering.",
+            purpose="Provide a way for visitors to contact the travel organization.",
         ),
     ),
     single_page_links=(
-        LinkRule("Hero", "Destination", LinkType.NAVIGATION),
-        LinkRule("Destination", "Experiences", LinkType.NAVIGATION),
-        LinkRule("Experiences", "Highlights", LinkType.NAVIGATION),
-        LinkRule("Highlights", "Itinerary", LinkType.NAVIGATION),
-        LinkRule("Itinerary", "Accommodation", LinkType.NAVIGATION),
-        LinkRule("Accommodation", "Reviews", LinkType.NAVIGATION),
-        LinkRule("Reviews", "Booking CTA", LinkType.NAVIGATION),
-        LinkRule("Hero", "Booking CTA", LinkType.CTA),
-        LinkRule("Experiences", "Booking CTA", LinkType.CTA),
+        LinkRule("Hero", "Destinations", LinkType.NAVIGATION),
+        LinkRule("Destinations", "Experiences", LinkType.NAVIGATION),
+        LinkRule("Experiences", "Itineraries", LinkType.NAVIGATION),
+        LinkRule("Itineraries", "Inspiration", LinkType.NAVIGATION),
+        LinkRule("Inspiration", "CTA", LinkType.NAVIGATION),
+        LinkRule("Hero", "CTA", LinkType.CTA),
     ),
     multi_page_links=(
         LinkRule("Home", "Destinations", LinkType.NAVIGATION),
         LinkRule("Home", "Experiences", LinkType.NAVIGATION),
         LinkRule("Home", "Itineraries", LinkType.NAVIGATION),
         LinkRule("Home", "Journal", LinkType.NAVIGATION),
-        LinkRule("Home", "About", LinkType.NAVIGATION),
-        LinkRule("Home", "Booking", LinkType.NAVIGATION),
-        LinkRule(
-            "Destinations.Destination.Experiences",
-            "Experiences.Experience",
-            LinkType.NAVIGATION,
-        ),
-        LinkRule(
-            "Destinations.Destination.Itineraries",
-            "Itineraries.Itinerary",
-            LinkType.NAVIGATION,
-        ),
-        LinkRule(
-            "Experiences.Experience",
-            "Destinations.Destination",
-            LinkType.NAVIGATION,
-        ),
-        LinkRule(
-            "Experiences.Experience",
-            "Booking",
-            LinkType.CTA,
-        ),
-        LinkRule(
-            "Itineraries.Itinerary",
-            "Booking",
-            LinkType.CTA,
-        ),
-        LinkRule("Journal", "Destinations", LinkType.NAVIGATION),
+        LinkRule("Destinations", "Destination", LinkType.NAVIGATION),
+        LinkRule("Experiences", "Experience", LinkType.NAVIGATION),
+        LinkRule("Itineraries", "Itinerary", LinkType.NAVIGATION),
+        LinkRule("Destination", "Experience", LinkType.CTA),
+        LinkRule("Experience", "Itinerary", LinkType.CTA),
     ),
+    templates=TRAVEL_TEMPLATES,
 )
 
 
@@ -960,154 +968,122 @@ TRAVEL = profile(
 # ---------------------------------------------------------------------------
 
 
+WELLNESS_TEMPLATES = (
+    template(
+        "Service",
+        purpose="Present an individual wellness service, its benefits, process, and participation information.",
+    ),
+    template(
+        "Program",
+        purpose="Present an individual wellness program, its structure, goals, and participation details.",
+    ),
+)
+
+
 WELLNESS = profile(
     site_type=SiteType.WELLNESS,
-    topology=Topology.HIERARCHICAL,
+    default_topology=Topology.HIERARCHICAL,
     single_page=(
         section(
             "Hero",
-            purpose="Introduce the wellness offering, communicate its philosophy, and guide users toward engagement.",
-        ),
-        section(
-            "Philosophy",
-            purpose="Explain the principles, beliefs, and approach that define the wellness offering.",
+            purpose="Introduce the wellness offering and communicate its positioning.",
         ),
         section(
             "Services",
-            purpose="Present the wellness services available to users.",
+            purpose="Present the primary wellness services.",
         ),
         section(
             "Programs",
             required=False,
-            purpose="Present structured wellness programs designed around specific goals or user needs.",
+            purpose="Present structured wellness programs and journeys.",
         ),
         section(
-            "Benefits",
-            required=False,
-            purpose="Explain the outcomes and benefits users can expect from the services or programs.",
-        ),
-        section(
-            "Team",
-            required=False,
-            purpose="Introduce the practitioners, specialists, or people delivering the wellness offering.",
+            "Approach",
+            purpose="Explain the philosophy, methodology, or approach behind the wellness offering.",
         ),
         section(
             "Testimonials",
             required=False,
-            purpose="Provide customer feedback that reinforces trust and demonstrates the value of the offering.",
-        ),
-        section(
-            "Resources",
-            required=False,
-            purpose="Provide educational and informational content that supports users in their wellness journey.",
+            purpose="Provide customer feedback and social proof.",
         ),
         section(
             "FAQ",
             required=False,
-            purpose="Answer common questions about services, programs, process, and participation.",
+            purpose="Answer common questions about the wellness offering.",
         ),
         section(
-            "Booking CTA",
-            purpose="Drive users toward booking a service, consultation, program, or session.",
+            "CTA",
+            purpose="Guide visitors toward booking, consultation, or another primary action.",
         ),
     ),
     multi_page=(
         page(
+            "Home",
+            purpose="Introduce the wellness offering and communicate its positioning.",
+        ),
+        page(
             "Services",
-            purpose="Provide a dedicated overview of the wellness services available.",
+            purpose="Present the available wellness services.",
             children=(
-                template(
+                collection(
                     "Service",
-                    purpose="Present an individual wellness service, its benefits, process, and participation information.",
+                    purpose="Organize individual wellness services.",
+                    item_template="Service",
                 ),
             ),
+        ),
+        entry_point(
+            "Service",
+            purpose="Provide direct access to individual wellness service pages.",
+            target_template="Service",
         ),
         page(
             "Programs",
             required=False,
-            purpose="Present structured wellness programs designed around specific goals or needs.",
+            purpose="Present structured wellness programs and journeys.",
             children=(
-                template(
+                collection(
                     "Program",
-                    purpose="Present an individual wellness program, its structure, goals, and participation details.",
+                    purpose="Organize individual wellness programs.",
+                    item_template="Program",
                 ),
             ),
+        ),
+        entry_point(
+            "Program",
+            required=False,
+            purpose="Provide direct access to individual wellness program pages.",
+            target_template="Program",
         ),
         page(
             "About",
-            purpose="Explain the organization's identity, philosophy, expertise, and approach to wellness.",
-            children=(
-                page(
-                    "Philosophy",
-                    required=False,
-                    purpose="Explain the principles and beliefs that guide the organization's approach to wellness.",
-                ),
-                page(
-                    "Team",
-                    required=False,
-                    purpose="Introduce the practitioners and specialists delivering the organization's services.",
-                ),
-                page(
-                    "Approach",
-                    required=False,
-                    purpose="Explain the methodology and experience users can expect from the organization.",
-                ),
-            ),
-        ),
-        page(
-            "Resources",
-            required=False,
-            purpose="Provide educational and informational content supporting users in their wellness journey.",
-            children=(
-                page(
-                    "Blog",
-                    required=False,
-                    purpose="Publish ongoing wellness articles, insights, and educational content.",
-                ),
-                page(
-                    "Guides",
-                    required=False,
-                    purpose="Provide practical guidance and educational resources around wellness topics.",
-                ),
-                page(
-                    "Articles",
-                    required=False,
-                    purpose="Provide deeper editorial content about wellness topics and areas of expertise.",
-                ),
-            ),
-        ),
-        page(
-            "Testimonials",
-            required=False,
-            purpose="Provide customer experiences and feedback that support trust and credibility.",
+            purpose="Explain the organization, practitioners, philosophy, and approach.",
         ),
         page(
             "Contact",
-            purpose="Provide a direct communication channel for questions, inquiries, and service-related contact.",
+            purpose="Provide a way to contact the wellness organization.",
         ),
     ),
     single_page_links=(
-        LinkRule("Hero", "Philosophy", LinkType.NAVIGATION),
-        LinkRule("Philosophy", "Services", LinkType.NAVIGATION),
+        LinkRule("Hero", "Services", LinkType.NAVIGATION),
         LinkRule("Services", "Programs", LinkType.NAVIGATION),
-        LinkRule("Programs", "Benefits", LinkType.NAVIGATION),
-        LinkRule("Benefits", "Testimonials", LinkType.NAVIGATION),
+        LinkRule("Programs", "Approach", LinkType.NAVIGATION),
+        LinkRule("Approach", "Testimonials", LinkType.NAVIGATION),
         LinkRule("Testimonials", "FAQ", LinkType.NAVIGATION),
-        LinkRule("FAQ", "Booking CTA", LinkType.NAVIGATION),
-        LinkRule("Hero", "Booking CTA", LinkType.CTA),
-        LinkRule("Services", "Booking CTA", LinkType.CTA),
+        LinkRule("FAQ", "CTA", LinkType.NAVIGATION),
+        LinkRule("Hero", "CTA", LinkType.CTA),
     ),
     multi_page_links=(
         LinkRule("Home", "Services", LinkType.NAVIGATION),
         LinkRule("Home", "Programs", LinkType.NAVIGATION),
         LinkRule("Home", "About", LinkType.NAVIGATION),
-        LinkRule("Home", "Resources", LinkType.NAVIGATION),
-        LinkRule("Home", "Testimonials", LinkType.NAVIGATION),
         LinkRule("Home", "Contact", LinkType.NAVIGATION),
-        LinkRule("Services", "Contact", LinkType.CTA),
-        LinkRule("Programs", "Contact", LinkType.CTA),
-        LinkRule("Resources", "Services", LinkType.CTA),
+        LinkRule("Services", "Service", LinkType.NAVIGATION),
+        LinkRule("Programs", "Program", LinkType.NAVIGATION),
+        LinkRule("Service", "Contact", LinkType.CTA),
+        LinkRule("Program", "Contact", LinkType.CTA),
     ),
+    templates=WELLNESS_TEMPLATES,
 )
 
 
@@ -1116,189 +1092,114 @@ WELLNESS = profile(
 # ---------------------------------------------------------------------------
 
 
+FINTECH_TEMPLATES = (
+    template(
+        "Solution",
+        purpose="Present an individual financial solution and explain how it addresses a specific customer need.",
+    ),
+)
+
+
 FINTECH = profile(
     site_type=SiteType.FINTECH,
-    topology=Topology.HIERARCHICAL,
+    default_topology=Topology.MATRIX,
     single_page=(
         section(
             "Hero",
-            purpose="Introduce the financial product, communicate its core value, and drive users toward adoption.",
+            purpose="Communicate the fintech offering and establish trust and value.",
         ),
         section(
-            "Product",
-            purpose="Explain the financial product, its purpose, and the value it provides to users.",
-        ),
-        section(
-            "Features",
-            purpose="Present the product's core financial capabilities and functionality.",
-        ),
-        section(
-            "Security",
-            purpose="Explain how financial data, transactions, and user accounts are protected.",
+            "Solutions",
+            purpose="Present the main financial products or solutions.",
         ),
         section(
             "How It Works",
-            purpose="Explain the main steps involved in using the financial product or service.",
+            purpose="Explain the process and user experience of the financial service.",
         ),
         section(
-            "Use Cases",
-            required=False,
-            purpose="Demonstrate how different user segments can apply the financial product.",
+            "Security",
+            purpose="Explain security, trust, compliance, and protection measures.",
         ),
         section(
-            "Integrations",
-            required=False,
-            purpose="Show how the financial product connects with external platforms, tools, or financial systems.",
+            "Benefits",
+            purpose="Present the key benefits and outcomes for customers.",
         ),
         section(
             "Trust",
-            purpose="Establish credibility through evidence, transparency, security information, or institutional trust signals.",
-        ),
-        section(
-            "Pricing",
             required=False,
-            purpose="Explain fees, pricing models, and commercial conditions associated with the financial product.",
-        ),
-        section(
-            "FAQ",
-            required=False,
-            purpose="Address common questions about the financial product, security, pricing, and usage.",
+            purpose="Provide evidence of reliability through customers, metrics, or credentials.",
         ),
         section(
             "CTA",
-            purpose="Drive users toward account creation, product adoption, consultation, or another conversion action.",
+            purpose="Guide visitors toward signup, consultation, or another conversion action.",
         ),
     ),
     multi_page=(
         page(
-            "Product",
-            purpose="Provide a dedicated area explaining the financial product and its capabilities.",
-            children=(
-                page(
-                    "Overview",
-                    purpose="Explain the financial product's core value, purpose, and positioning.",
-                ),
-                page(
-                    "Features",
-                    purpose="Provide detailed information about the product's financial capabilities.",
-                ),
-                page(
-                    "Security",
-                    purpose="Explain security practices and protections for financial data and transactions.",
-                ),
-                page(
-                    "Integrations",
-                    required=False,
-                    purpose="Explain how the product integrates with external financial or business systems.",
-                ),
-            ),
+            "Home",
+            purpose="Introduce the fintech offering and establish its core value proposition.",
         ),
         page(
             "Solutions",
-            required=False,
-            purpose="Organize the financial offering around the needs of different customer segments.",
+            purpose="Present the available financial solutions.",
             children=(
-                page(
-                    "Individuals",
-                    purpose="Explain how the financial product addresses individual customer needs.",
-                ),
-                page(
-                    "Businesses",
-                    purpose="Explain how the financial product addresses business and operational needs.",
-                ),
-                page(
-                    "Enterprise",
-                    purpose="Explain how the financial product addresses enterprise-scale financial requirements.",
+                collection(
+                    "Solution",
+                    purpose="Organize individual financial solutions.",
+                    item_template="Solution",
                 ),
             ),
         ),
-        page(
-            "Pricing",
-            required=False,
-            purpose="Present fees, pricing options, and commercial conditions for the financial product.",
+        entry_point(
+            "Solution",
+            purpose="Provide direct access to individual financial solution pages.",
+            target_template="Solution",
         ),
         page(
-            "Resources",
-            required=False,
-            purpose="Provide educational, informational, and product-supporting resources.",
-            children=(
-                page(
-                    "Blog",
-                    required=False,
-                    purpose="Publish financial insights, product updates, and educational content.",
-                ),
-                page(
-                    "Guides",
-                    required=False,
-                    purpose="Provide practical guidance for understanding or using the financial product.",
-                ),
-                page(
-                    "Documentation",
-                    required=False,
-                    purpose="Provide detailed technical and product documentation for users and developers.",
-                ),
-            ),
+            "Security",
+            purpose="Explain security, compliance, privacy, and trust measures.",
         ),
         page(
             "Company",
             required=False,
-            purpose="Provide information about the organization behind the financial product.",
-            children=(
-                page(
-                    "About",
-                    required=False,
-                    purpose="Explain the organization's identity, mission, background, and credibility.",
-                ),
-                page(
-                    "Careers",
-                    required=False,
-                    purpose="Present employment opportunities within the organization.",
-                ),
-                page(
-                    "Contact",
-                    purpose="Provide a direct channel for inquiries and communication with the organization.",
-                ),
-            ),
+            purpose="Present the organization behind the financial product.",
         ),
         page(
-            "Security",
-            purpose="Provide centralized information about security practices, protections, and trust.",
+            "Contact",
+            required=False,
+            purpose="Provide a way for customers or prospects to contact the organization.",
         ),
         page(
             "Login",
-            purpose="Allow existing customers to securely access their financial account.",
+            required=False,
+            purpose="Allow existing customers to access their financial account.",
         ),
         page(
             "Signup",
-            purpose="Allow new customers to create an account and begin using the financial product.",
+            required=False,
+            purpose="Allow new customers to create an account.",
         ),
     ),
     single_page_links=(
-        LinkRule("Hero", "Product", LinkType.NAVIGATION),
-        LinkRule("Product", "Features", LinkType.NAVIGATION),
-        LinkRule("Features", "Security", LinkType.NAVIGATION),
-        LinkRule("Security", "How It Works", LinkType.NAVIGATION),
-        LinkRule("How It Works", "Use Cases", LinkType.NAVIGATION),
-        LinkRule("Use Cases", "Trust", LinkType.NAVIGATION),
-        LinkRule("Trust", "Pricing", LinkType.NAVIGATION),
-        LinkRule("Pricing", "FAQ", LinkType.NAVIGATION),
-        LinkRule("FAQ", "CTA", LinkType.NAVIGATION),
+        LinkRule("Hero", "Solutions", LinkType.NAVIGATION),
+        LinkRule("Solutions", "How It Works", LinkType.NAVIGATION),
+        LinkRule("How It Works", "Security", LinkType.NAVIGATION),
+        LinkRule("Security", "Benefits", LinkType.NAVIGATION),
+        LinkRule("Benefits", "Trust", LinkType.NAVIGATION),
+        LinkRule("Trust", "CTA", LinkType.NAVIGATION),
         LinkRule("Hero", "CTA", LinkType.CTA),
-        LinkRule("Pricing", "CTA", LinkType.CTA),
     ),
     multi_page_links=(
-        LinkRule("Home", "Product", LinkType.NAVIGATION),
         LinkRule("Home", "Solutions", LinkType.NAVIGATION),
-        LinkRule("Home", "Pricing", LinkType.NAVIGATION),
-        LinkRule("Home", "Resources", LinkType.NAVIGATION),
-        LinkRule("Home", "Company", LinkType.NAVIGATION),
         LinkRule("Home", "Security", LinkType.NAVIGATION),
+        LinkRule("Home", "Company", LinkType.NAVIGATION),
+        LinkRule("Home", "Contact", LinkType.NAVIGATION),
         LinkRule("Home", "Login", LinkType.NAVIGATION),
-        LinkRule("Product", "Product.Security", LinkType.NAVIGATION),
-        LinkRule("Product", "Signup", LinkType.CTA),
-        LinkRule("Pricing", "Signup", LinkType.CTA),
+        LinkRule("Solutions", "Solution", LinkType.NAVIGATION),
+        LinkRule("Solution", "Signup", LinkType.CTA),
         LinkRule("Security", "Signup", LinkType.CTA),
     ),
+    templates=FINTECH_TEMPLATES,
 )
 
 
@@ -1307,191 +1208,132 @@ FINTECH = profile(
 # ---------------------------------------------------------------------------
 
 
+TECHNOLOGY_TEMPLATES = (
+    template(
+        "Product",
+        purpose="Present an individual technology product, its capabilities, value, and use cases.",
+    ),
+    template(
+        "Use Case",
+        purpose="Present an individual problem or scenario and explain how the technology addresses it.",
+    ),
+)
+
+
 TECHNOLOGY = profile(
     site_type=SiteType.TECHNOLOGY,
-    topology=Topology.HIERARCHICAL,
+    default_topology=Topology.HIERARCHICAL,
     single_page=(
         section(
             "Hero",
-            purpose="Introduce the technology offering, communicate its core value, and direct users toward adoption or exploration.",
+            purpose="Introduce the technology offering and communicate its core value.",
         ),
         section(
-            "Technology",
-            purpose="Explain the underlying technology, approach, or technical proposition behind the offering.",
-        ),
-        section(
-            "Features",
-            purpose="Present the primary capabilities and functionality of the technology product.",
-        ),
-        section(
-            "Architecture",
-            required=False,
-            purpose="Explain the technical architecture and major components underlying the product.",
+            "Products",
+            purpose="Present the main technology products or capabilities.",
         ),
         section(
             "Use Cases",
-            purpose="Demonstrate how the technology can be applied to practical problems or user needs.",
+            purpose="Show how the technology can be applied to specific scenarios.",
         ),
         section(
-            "Integrations",
-            required=False,
-            purpose="Show how the technology connects with external tools, platforms, or systems.",
-        ),
-        section(
-            "Performance",
-            required=False,
-            purpose="Communicate technical performance, scalability, reliability, or efficiency characteristics.",
+            "Technology",
+            purpose="Explain the underlying technology, architecture, or technical advantages.",
         ),
         section(
             "Security",
             required=False,
-            purpose="Explain how the technology protects systems, data, infrastructure, and users.",
+            purpose="Explain security, reliability, privacy, and technical safeguards.",
         ),
         section(
-            "Documentation",
+            "Resources",
             required=False,
-            purpose="Provide technical information required to understand, integrate, configure, or use the technology.",
-        ),
-        section(
-            "FAQ",
-            required=False,
-            purpose="Address common technical, product, implementation, and adoption questions.",
+            purpose="Provide technical and educational resources.",
         ),
         section(
             "CTA",
-            purpose="Drive users toward adoption, trial, documentation, contact, or another primary action.",
+            purpose="Guide visitors toward trying, purchasing, contacting, or learning more.",
         ),
     ),
     multi_page=(
         page(
-            "Technology",
-            purpose="Provide detailed information about the technology and its technical foundation.",
-            children=(
-                page(
-                    "Overview",
-                    purpose="Explain the technology's purpose, value, and high-level capabilities.",
-                ),
-                page(
-                    "Architecture",
-                    required=False,
-                    purpose="Document the technical architecture and structure of the technology.",
-                ),
-                page(
-                    "Features",
-                    purpose="Provide detailed information about the technology's capabilities.",
-                ),
-                page(
-                    "Performance",
-                    required=False,
-                    purpose="Present technical performance, scalability, reliability, and efficiency information.",
-                ),
-            ),
+            "Home",
+            purpose="Introduce the technology company and its primary offering.",
         ),
         page(
             "Products",
-            purpose="Organize the technology company's products and productized offerings.",
+            purpose="Present the technology products.",
             children=(
-                template(
+                collection(
                     "Product",
-                    purpose="Present an individual technology product, its capabilities, value, and use cases.",
+                    purpose="Organize individual technology products.",
+                    item_template="Product",
                 ),
             ),
         ),
+        entry_point(
+            "Product",
+            purpose="Provide direct access to individual technology product pages.",
+            target_template="Product",
+        ),
         page(
-            "Solutions",
-            required=False,
-            purpose="Organize technology applications around specific business or technical problems.",
+            "Use Cases",
+            purpose="Present technology applications and use cases.",
             children=(
-                template(
+                collection(
                     "Use Case",
-                    purpose="Present an individual problem or scenario and explain how the technology addresses it.",
+                    purpose="Organize individual technology use cases.",
+                    item_template="Use Case",
                 ),
             ),
         ),
-        page(
-            "Integrations",
-            required=False,
-            purpose="Present supported integrations and explain how the technology connects with external systems.",
+        entry_point(
+            "Use Case",
+            purpose="Provide direct access to individual technology use case pages.",
+            target_template="Use Case",
         ),
         page(
-            "Documentation",
-            purpose="Provide detailed technical documentation for users, developers, and integrators.",
+            "Technology",
+            purpose="Explain the underlying technology and technical capabilities.",
         ),
         page(
             "Resources",
             required=False,
-            purpose="Provide educational and informational content supporting technology adoption.",
-            children=(
-                page(
-                    "Blog",
-                    required=False,
-                    purpose="Publish technology insights, announcements, and educational articles.",
-                ),
-                page(
-                    "Guides",
-                    required=False,
-                    purpose="Provide practical guidance for adopting, configuring, or using the technology.",
-                ),
-                page(
-                    "Tutorials",
-                    required=False,
-                    purpose="Provide step-by-step educational material for learning and implementing the technology.",
-                ),
-            ),
+            purpose="Provide documentation, articles, guides, and technical resources.",
         ),
         page(
             "Company",
             required=False,
-            purpose="Provide information about the organization developing or providing the technology.",
-            children=(
-                page(
-                    "About",
-                    required=False,
-                    purpose="Explain the organization's identity, mission, and background.",
-                ),
-                page(
-                    "Careers",
-                    required=False,
-                    purpose="Present employment opportunities within the organization.",
-                ),
-                page(
-                    "Contact",
-                    required=False,
-                    purpose="Provide a direct channel for technical, commercial, or organizational inquiries.",
-                ),
-            ),
+            purpose="Present the organization behind the technology.",
         ),
         page(
-            "Support",
+            "Contact",
             required=False,
-            purpose="Provide assistance for users experiencing technical or product-related issues.",
+            purpose="Provide a way to contact the technology company.",
         ),
     ),
     single_page_links=(
-        LinkRule("Hero", "Technology", LinkType.NAVIGATION),
-        LinkRule("Technology", "Features", LinkType.NAVIGATION),
-        LinkRule("Features", "Architecture", LinkType.NAVIGATION),
-        LinkRule("Architecture", "Use Cases", LinkType.NAVIGATION),
-        LinkRule("Use Cases", "Integrations", LinkType.NAVIGATION),
-        LinkRule("Integrations", "Performance", LinkType.NAVIGATION),
-        LinkRule("Performance", "Security", LinkType.NAVIGATION),
-        LinkRule("Security", "Documentation", LinkType.NAVIGATION),
-        LinkRule("Documentation", "CTA", LinkType.NAVIGATION),
+        LinkRule("Hero", "Products", LinkType.NAVIGATION),
+        LinkRule("Products", "Use Cases", LinkType.NAVIGATION),
+        LinkRule("Use Cases", "Technology", LinkType.NAVIGATION),
+        LinkRule("Technology", "Security", LinkType.NAVIGATION),
+        LinkRule("Security", "Resources", LinkType.NAVIGATION),
+        LinkRule("Resources", "CTA", LinkType.NAVIGATION),
         LinkRule("Hero", "CTA", LinkType.CTA),
     ),
     multi_page_links=(
-        LinkRule("Home", "Technology", LinkType.NAVIGATION),
         LinkRule("Home", "Products", LinkType.NAVIGATION),
-        LinkRule("Home", "Solutions", LinkType.NAVIGATION),
-        LinkRule("Home", "Integrations", LinkType.NAVIGATION),
-        LinkRule("Home", "Documentation", LinkType.NAVIGATION),
+        LinkRule("Home", "Use Cases", LinkType.NAVIGATION),
+        LinkRule("Home", "Technology", LinkType.NAVIGATION),
         LinkRule("Home", "Resources", LinkType.NAVIGATION),
         LinkRule("Home", "Company", LinkType.NAVIGATION),
-        LinkRule("Home", "Support", LinkType.NAVIGATION),
-        LinkRule("Products", "Products.Product", LinkType.NAVIGATION),
-        LinkRule("Products.Product", "Documentation", LinkType.CTA),
-        LinkRule("Documentation", "Support", LinkType.CTA),
+        LinkRule("Home", "Contact", LinkType.NAVIGATION),
+        LinkRule("Products", "Product", LinkType.NAVIGATION),
+        LinkRule("Use Cases", "Use Case", LinkType.NAVIGATION),
+        LinkRule("Product", "Contact", LinkType.CTA),
+        LinkRule("Use Case", "Product", LinkType.CTA),
     ),
+    templates=TECHNOLOGY_TEMPLATES,
 )
 
 
@@ -1500,161 +1342,134 @@ TECHNOLOGY = profile(
 # ---------------------------------------------------------------------------
 
 
+FASHION_TEMPLATES = (
+    template(
+        "Collection",
+        purpose="Present an individual fashion collection, its concept, products, and visual identity.",
+    ),
+    template(
+        "Product",
+        purpose="Present an individual fashion product, its details, variants, and purchasing actions.",
+    ),
+)
+
+
 FASHION = profile(
     site_type=SiteType.FASHION,
-    topology=Topology.MATRIX,
+    default_topology=Topology.MATRIX,
     single_page=(
         section(
             "Hero",
-            purpose="Establish the fashion brand identity, communicate the collection proposition, and inspire exploration.",
+            purpose="Establish the fashion brand identity and introduce the current offering.",
         ),
         section(
-            "Collection",
-            purpose="Introduce the featured collection and communicate its visual and conceptual identity.",
+            "Collections",
+            purpose="Present the brand's collections and visual direction.",
         ),
         section(
             "Featured Products",
-            purpose="Highlight selected products from the collection or current assortment.",
-        ),
-        section(
-            "Editorial",
-            required=False,
-            purpose="Provide editorial storytelling that adds cultural, visual, or conceptual context to the brand.",
+            purpose="Highlight selected products and encourage product discovery.",
         ),
         section(
             "Story",
             required=False,
-            purpose="Communicate the narrative, inspiration, or creative concept behind the brand or collection.",
+            purpose="Communicate the brand story, philosophy, and creative identity.",
         ),
         section(
-            "Campaign",
+            "Journal",
             required=False,
-            purpose="Present campaign content that communicates the seasonal or creative direction of the brand.",
-        ),
-        section(
-            "Lookbook",
-            required=False,
-            purpose="Showcase curated looks and visual combinations that communicate the collection's styling.",
+            purpose="Present editorial stories, campaigns, inspiration, and brand content.",
         ),
         section(
             "Stores",
             required=False,
-            purpose="Help users discover physical retail locations and relevant store information.",
+            purpose="Provide information about physical stores or retail locations.",
         ),
         section(
-            "Newsletter",
-            required=False,
-            purpose="Provide a mechanism for users to subscribe to ongoing brand and collection communications.",
+            "CTA",
+            purpose="Guide visitors toward shopping, collection discovery, or another primary action.",
         ),
     ),
     multi_page=(
         page(
+            "Home",
+            purpose="Introduce the fashion brand and current offering.",
+        ),
+        page(
             "Collections",
-            purpose="Provide access to the brand's collections and their visual and commercial stories.",
+            purpose="Present the brand's fashion collections.",
             children=(
-                template(
+                collection(
                     "Collection",
-                    purpose="Present an individual fashion collection, its concept, products, and visual identity.",
+                    purpose="Organize individual fashion collections.",
+                    item_template="Collection",
                 ),
             ),
+        ),
+        entry_point(
+            "Collection",
+            purpose="Provide direct access to individual fashion collection pages.",
+            target_template="Collection",
         ),
         page(
             "Shop",
-            purpose="Provide the main product discovery and shopping experience.",
+            purpose="Provide access to the product catalog.",
             children=(
                 collection(
                     "Category",
-                    purpose="Organize fashion products into meaningful categories for browsing and discovery.",
-                    children=(
-                        template(
-                            "Product",
-                            purpose="Present an individual fashion product, its details, variants, and purchasing actions.",
-                        ),
-                    ),
+                    purpose="Organize fashion products into meaningful shopping categories.",
+                    item_template="Product",
                 ),
             ),
         ),
-        page(
-            "Editorial",
-            required=False,
-            purpose="Provide a dedicated editorial environment for fashion storytelling and visual content.",
-            children=(
-                page(
-                    "Story",
-                    required=False,
-                    purpose="Present a narrative or creative story related to the brand, collection, or fashion context.",
-                ),
-                page(
-                    "Campaign",
-                    required=False,
-                    purpose="Present a campaign and communicate its creative direction and visual identity.",
-                ),
-                page(
-                    "Lookbook",
-                    required=False,
-                    purpose="Present curated looks and styling combinations from the brand's collections.",
-                ),
-            ),
+        entry_point(
+            "Product",
+            purpose="Provide direct access to individual fashion product pages.",
+            target_template="Product",
         ),
         page(
             "Journal",
             required=False,
-            purpose="Publish ongoing editorial content, brand news, fashion perspectives, and cultural stories.",
-        ),
-        page(
-            "About",
-            purpose="Explain the fashion brand's identity, heritage, values, and creative positioning.",
-            children=(
-                page(
-                    "Brand",
-                    required=False,
-                    purpose="Present the brand identity, positioning, and defining characteristics.",
-                ),
-                page(
-                    "Story",
-                    required=False,
-                    purpose="Explain the history, inspiration, and narrative behind the fashion brand.",
-                ),
-                page(
-                    "Sustainability",
-                    required=False,
-                    purpose="Communicate the brand's sustainability practices, commitments, and approach.",
-                ),
-            ),
+            purpose="Publish fashion stories, campaigns, inspiration, and editorial content.",
         ),
         page(
             "Stores",
             required=False,
-            purpose="Provide information about physical stores, locations, and shopping experiences.",
+            purpose="Present physical stores and retail locations.",
+        ),
+        page(
+            "About",
+            required=False,
+            purpose="Present the fashion brand, its story, values, and identity.",
         ),
         page(
             "Contact",
-            purpose="Provide a direct communication channel for customer, commercial, or brand inquiries.",
+            required=False,
+            purpose="Provide a way to contact the fashion brand.",
         ),
     ),
     single_page_links=(
-        LinkRule("Hero", "Collection", LinkType.NAVIGATION),
-        LinkRule("Collection", "Featured Products", LinkType.NAVIGATION),
-        LinkRule("Featured Products", "Editorial", LinkType.NAVIGATION),
-        LinkRule("Editorial", "Story", LinkType.NAVIGATION),
-        LinkRule("Story", "Campaign", LinkType.NAVIGATION),
-        LinkRule("Campaign", "Lookbook", LinkType.NAVIGATION),
-        LinkRule("Lookbook", "Stores", LinkType.NAVIGATION),
-        LinkRule("Hero", "Featured Products", LinkType.CTA),
+        LinkRule("Hero", "Collections", LinkType.NAVIGATION),
+        LinkRule("Collections", "Featured Products", LinkType.NAVIGATION),
+        LinkRule("Featured Products", "Story", LinkType.NAVIGATION),
+        LinkRule("Story", "Journal", LinkType.NAVIGATION),
+        LinkRule("Journal", "Stores", LinkType.NAVIGATION),
+        LinkRule("Stores", "CTA", LinkType.NAVIGATION),
+        LinkRule("Hero", "CTA", LinkType.CTA),
     ),
     multi_page_links=(
         LinkRule("Home", "Collections", LinkType.NAVIGATION),
         LinkRule("Home", "Shop", LinkType.NAVIGATION),
-        LinkRule("Home", "Editorial", LinkType.NAVIGATION),
         LinkRule("Home", "Journal", LinkType.NAVIGATION),
-        LinkRule("Home", "About", LinkType.NAVIGATION),
         LinkRule("Home", "Stores", LinkType.NAVIGATION),
+        LinkRule("Home", "About", LinkType.NAVIGATION),
         LinkRule("Home", "Contact", LinkType.NAVIGATION),
-        LinkRule("Collections", "Shop", LinkType.CTA),
-        LinkRule("Shop", "Shop.Category.Product", LinkType.NAVIGATION),
-        LinkRule("Shop.Category.Product", "Contact", LinkType.CTA),
-        LinkRule("Editorial", "Shop", LinkType.CTA),
+        LinkRule("Collections", "Collection", LinkType.NAVIGATION),
+        LinkRule("Shop", "Product", LinkType.NAVIGATION),
+        LinkRule("Collection", "Product", LinkType.CTA),
+        LinkRule("Product", "Shop", LinkType.CTA),
     ),
+    templates=FASHION_TEMPLATES,
 )
 
 
@@ -1664,17 +1479,14 @@ FASHION = profile(
 
 
 PROFILES: dict[SiteType, SiteProfile] = {
-    site_profile.site_type: site_profile
-    for site_profile in (
-        LANDING_PAGE,
-        SAAS,
-        AGENCY,
-        PORTFOLIO,
-        ECOMMERCE,
-        TRAVEL,
-        WELLNESS,
-        FINTECH,
-        TECHNOLOGY,
-        FASHION,
-    )
+    SiteType.LANDING_PAGE: LANDING_PAGE,
+    SiteType.SAAS: SAAS,
+    SiteType.AGENCY: AGENCY,
+    SiteType.PORTFOLIO: PORTFOLIO,
+    SiteType.ECOMMERCE: ECOMMERCE,
+    SiteType.TRAVEL: TRAVEL,
+    SiteType.WELLNESS: WELLNESS,
+    SiteType.FINTECH: FINTECH,
+    SiteType.TECHNOLOGY: TECHNOLOGY,
+    SiteType.FASHION: FASHION,
 }

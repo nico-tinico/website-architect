@@ -55,3 +55,29 @@ def test_all_generated_nodes_have_purpose(
         assert node.purpose.strip(), (
             f"Node '{node.id}' has no purpose."
         )
+
+
+@pytest.mark.parametrize("site_type", list(SiteType))
+@pytest.mark.parametrize("mode", list(SiteMode))
+def test_all_generated_architectures_include_profile_templates(
+    site_type: SiteType,
+    mode: SiteMode,
+) -> None:
+    generator = ArchitectureGenerator()
+
+    architecture = generator.generate(
+        site_type=site_type,
+        mode=mode,
+    )
+
+    expected_ids = {
+        template.name.strip().lower().replace(" ", "-")
+        for template in PROFILES[site_type].templates
+    }
+
+    actual_ids = {
+        template.id
+        for template in architecture.templates
+    }
+
+    assert actual_ids == expected_ids

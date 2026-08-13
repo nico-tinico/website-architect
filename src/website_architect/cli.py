@@ -1,68 +1,96 @@
-from pathlib import Path
+from __future__ import annotations
+
+import argparse
+import sys
 
 from website_architect.domain.enums import SiteMode, SiteType
 from website_architect.generator.generator import ArchitectureGenerator
 from website_architect.serializers.json import JsonSerializer
 
 
-def main() -> None:
-    print("Website Architect")
-    print("=================")
-    print()
+def main() -> int:
+    parser = _build_parser()
+    args = parser.parse_args()
 
-    site_type = _ask_site_type()
-    mode = _ask_mode()
+    if args.command == "generate":
+        return _generate(
+            site_type=args.site_type,
+            mode=args.mode,
+            output=args.output,
+        )
 
+    parser.print_help()
+    return 0
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="website-architect",
+        description=(
+            "Generate website information architectures "
+            "from reusable site profiles."
+        ),
+    )
+
+    subparsers = parser.add_subparsers(
+        dest="command",
+    )
+
+    generate_parser = subparsers.add_parser(
+        "generate",
+        help="Generate a website architecture.",
+    )
+
+    generate_parser.add_argument(
+        "--type",
+        dest="site_type",
+        required=True,
+        choices=[site_type.value for site_type in SiteType],
+        help="Website type.",
+    )
+
+    generate_parser.add_argument(
+        "--mode",
+        required=True,
+        choices=[mode.value for mode in SiteMode],
+        help="Website architecture mode.",
+    )
+
+    generate_parser.add_argument(
+        "--output",
+        help="Write the generated JSON to a file.",
+    )
+
+    return parser
+
+
+def _generate(
+    *,
+    site_type: str,
+    mode: str,
+    output: str | None,
+) -> int:
     generator = ArchitectureGenerator()
     serializer = JsonSerializer()
 
     architecture = generator.generate(
-        site_type=site_type,
-        mode=mode,
+        site_type=SiteType(site_type),
+        mode=SiteMode(mode),
     )
 
-    output = serializer.serialize(architecture)
+    if output is None:
+        print(serializer.serialize(architecture))
+        return 0
 
-    output_path = Path("website-architecture.json")
-    output_path.write_text(
+    serializer.save(
+        architecture,
         output,
-        encoding="utf-8",
     )
 
-    print()
-    print("Architecture generated successfully.")
-    print()
-    print(f"Output: {output_path}")
+    print(f"Architecture written to {output}")
+
+    return 0
 
 
-def _ask_site_type() -> SiteType:
-    types = list(SiteType)
-
-    print("Select website type:")
-
-    for index, site_type in enumerate(types, start=1):
-        print(f"{index}. {site_type.value}")
-
-    while True:
-        try:
-            choice = int(input("\nType: "))
-            return types[choice - 1]
-        except (ValueError, IndexError):
-            print("Invalid choice. Try again.")
-
-
-def _ask_mode() -> SiteMode:
-    print("\nSelect architecture mode:")
-    print("1. Single Page")
-    print("2. Multi Page")
-
-    while True:
-        choice = input("\nMode: ").strip()
-
-        if choice == "1":
-            return SiteMode.SINGLE_PAGE
-
-        if choice == "2":
-            return SiteMode.MULTI_PAGE
-
-        print("Invalid choice. Try again.")
+if __name__ == "__main__":
+    sys.exit(main())
