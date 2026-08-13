@@ -421,6 +421,188 @@ Together, `nodes`, `templates`, and `links` provide a complete machine-readable 
 
 ## Architecture Model
 
+Website Architect represents a website as a structured information architecture composed of **nodes**, **templates**, and **relationships**.
+
+The model separates the reusable definitions stored in the catalog from the concrete architecture generated for a specific website type and mode.
+
+Core concepts
+
+```
+Site Architecture
+│
+├── Site configuration
+│ ├── Type
+│ ├── Mode
+│ └── Topology
+│
+├── Nodes
+│ ├── Pages
+│ ├── Sections
+│ ├── Collections
+│ └── Entry Points
+│
+├── Templates
+│ └── Reusable content structures
+│
+└── Graph
+└── Relationships between nodes
+```
+
+### Site Architecture
+
+The `SiteArchitecture` is the complete runtime representation produced by the generator.
+
+It contains:
+
+- the architecture version
+- website type
+- architecture mode
+- topology
+- root node
+- concrete nodes
+- reusable templates
+- the architecture graph
+
+```
+SiteArchitecture(
+version="1.0",
+site_type=SiteType.ECOMMERCE,
+mode=SiteMode.MULTI_PAGE,
+topology=Topology.MATRIX,
+root_id="home",
+nodes=...,
+templates=...,
+graph=...,
+)
+```
+
+The generated architecture is validated before being returned by the generator.
+
+### Nodes
+
+A `Node` represents a concrete element of the generated information architecture.
+
+Website Architect supports the following node types:
+
+| Type          | Purpose                                                |
+| ------------- | ------------------------------------------------------ |
+| `page`        | Represents a website page                              |
+| `section`     | Represents a section within a single-page architecture |
+| `collection`  | Represents a collection of repeatable entities         |
+| `entry_point` | Provides access to an individual template instance     |
+
+Nodes can form hierarchical relationships through `parent_id` and `position`.
+
+For example:
+
+```
+home
+└── shop
+└── category
+```
+
+A collection can reference the template used for its items:
+
+```
+Category
+└── item_template → product
+```
+
+An entry point can expose the corresponding individual template:
+
+```
+Product
+└── target_template → product
+```
+
+### Templates
+
+Templates represent reusable structures for repeatable content entities.
+
+They are intentionally separate from navigation nodes.
+
+For example, an ecommerce architecture can define:
+
+```
+product
+collection
+```
+
+The catalog defines these templates once, while generated collections and entry points reference them.
+
+This allows the same architectural model to represent both static website structure and dynamic content entities.
+
+### Graph
+
+The architecture graph represents relationships between nodes.
+
+Each relationship contains:
+
+```
+source
+target
+type
+```
+
+The supported relationship types are:
+
+- `navigation`
+- `cta`
+
+For example:
+
+```
+home.shop
+│
+└── navigation → home.product
+```
+
+The graph is therefore complementary to the node hierarchy: `parent_id` describes structural containment, while graph links describe relationships and navigation flows.
+
+### Catalog-driven generation
+
+The architecture model is generated from reusable `SiteProfile` definitions.
+
+The relationship between the catalog and runtime model is:
+
+```
+Site Profile
+│
+├── Page Definitions
+├── Template Definitions
+└── Link Rules
+│
+▼
+Architecture Generator
+│
+▼
+Site Architecture
+│
+┌─────┼─────┐
+▼ ▼ ▼
+Nodes Templates Graph
+```
+
+This separation allows website profiles to define **what an architecture should contain**, while the generator produces the concrete runtime representation.
+
+### Validation
+
+The architecture model enforces both structural and semantic constraints.
+
+Validation covers:
+
+- root node existence
+- unique node IDs
+- unique template IDs
+- valid parent references
+- valid node positions
+- valid template references
+- collection/entry-point semantics
+- valid graph sources and targets
+- repeatability constraints
+
+As a result, a generated architecture is not merely a JSON structure: it is a **validated domain model** that can safely be serialized and consumed by downstream systems.
+
 ## Development
 
 ## Testing
