@@ -196,6 +196,96 @@ The CLI uses the same architecture generation pipeline as the Python API, ensuri
 
 ## Python API
 
+Website Architect can also be used as a Python library, allowing generated architectures to be integrated directly into other applications and workflows.
+
+### Generate an architecture
+
+```
+from website_architect.domain.enums import SiteMode, SiteType
+from website_architect.generator.generator import ArchitectureGenerator
+
+
+generator = ArchitectureGenerator()
+
+architecture = generator.generate(
+    site_type=SiteType.ECOMMERCE,
+    mode=SiteMode.MULTI_PAGE,
+)
+```
+
+The returned `SiteArchitecture` contains the complete generated architecture, including:
+
+- website type and mode
+- topology
+- architecture nodes
+- reusable templates
+- graph relationships
+- template references
+
+### Validate an architecture
+
+Generated architectures are validated automatically by the generator.
+
+Validation can also be performed explicitly:
+
+```
+architecture.validate()
+```
+
+This verifies structural and semantic constraints, including node relationships, parent references, template references, positions, and graph links.
+
+### Serialize an architecture
+
+Use `JsonSerializer` to convert an architecture into the JSON representation:
+
+```
+from website_architect.serializer.json import JsonSerializer
+
+
+serializer = JsonSerializer()
+
+json_data = serializer.serialize(architecture)
+
+print(json_data)
+```
+
+### Save an architecture
+
+The serializer can write the generated architecture directly to a JSON file:
+
+```
+serializer.save(
+    architecture,
+    "ecommerce.json",
+)
+```
+
+### Complete example
+
+A complete generation workflow can therefore be written as:
+
+```
+from website_architect.domain.enums import SiteMode, SiteType
+from website_architect.generator.generator import ArchitectureGenerator
+from website_architect.serializer.json import JsonSerializer
+
+
+generator = ArchitectureGenerator()
+serializer = JsonSerializer()
+
+architecture = generator.generate(
+    site_type=SiteType.ECOMMERCE,
+    mode=SiteMode.MULTI_PAGE,
+)
+
+serializer.save(
+    architecture,
+    "ecommerce.json",
+)
+```
+
+The Python API and CLI use the same underlying generation pipeline. This means architectures generated programmatically follow the same catalog definitions, validation rules, template system, graph construction, and serialization contract as architectures generated through the command line.
+
 ## Output Format
 
 ## Architecture Model
