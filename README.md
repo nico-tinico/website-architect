@@ -24,7 +24,7 @@ and consumed by other systems.
 
 ## Supported Website Types
 
-Website Architect currently supports *20* architecture combinations
+Website Architect currently supports _20_ architecture combinations
 
 ## Architecture Modes
 
