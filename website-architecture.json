@@ -1,9 +1,9 @@
 {
   "version": "1.0",
   "site": {
-    "type": "saas",
+    "type": "ecommerce",
     "mode": "multi_page",
-    "topology": "hierarchical"
+    "topology": "matrix"
   },
   "root_id": "home",
   "nodes": [
@@ -18,266 +18,221 @@
       "position": 0
     },
     {
+      "id": "home.shop",
+      "name": "Shop",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home",
+      "position": 0
+    },
+    {
+      "id": "home.shop.category",
+      "name": "Category",
+      "type": "collection",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.shop",
+      "position": 0
+    },
+    {
+      "id": "home.shop.category.product",
+      "name": "Product",
+      "type": "template",
+      "required": true,
+      "repeatable": true,
+      "purpose": null,
+      "parent_id": "home.shop.category",
+      "position": 0
+    },
+    {
+      "id": "home.shop.collections",
+      "name": "Collections",
+      "type": "collection",
+      "required": false,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.shop",
+      "position": 1
+    },
+    {
+      "id": "home.shop.collections.collection",
+      "name": "Collection",
+      "type": "template",
+      "required": true,
+      "repeatable": true,
+      "purpose": null,
+      "parent_id": "home.shop.collections",
+      "position": 0
+    },
+    {
+      "id": "home.shop.search",
+      "name": "Search",
+      "type": "page",
+      "required": false,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.shop",
+      "position": 2
+    },
+    {
       "id": "home.product",
       "name": "Product",
-      "type": "page",
+      "type": "template",
       "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home",
-      "position": 0
-    },
-    {
-      "id": "home.product.overview",
-      "name": "Overview",
-      "type": "page",
-      "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.product",
-      "position": 0
-    },
-    {
-      "id": "home.product.features",
-      "name": "Features",
-      "type": "page",
-      "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.product",
-      "position": 1
-    },
-    {
-      "id": "home.product.integrations",
-      "name": "Integrations",
-      "type": "page",
-      "required": false,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.product",
-      "position": 2
-    },
-    {
-      "id": "home.product.security",
-      "name": "Security",
-      "type": "page",
-      "required": false,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.product",
-      "position": 3
-    },
-    {
-      "id": "home.solutions",
-      "name": "Solutions",
-      "type": "page",
-      "required": false,
-      "repeatable": false,
+      "repeatable": true,
       "purpose": null,
       "parent_id": "home",
       "position": 1
     },
     {
-      "id": "home.solutions.startups",
-      "name": "Startups",
+      "id": "home.wishlist",
+      "name": "Wishlist",
       "type": "page",
-      "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.solutions",
-      "position": 0
-    },
-    {
-      "id": "home.solutions.teams",
-      "name": "Teams",
-      "type": "page",
-      "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.solutions",
-      "position": 1
-    },
-    {
-      "id": "home.solutions.enterprise",
-      "name": "Enterprise",
-      "type": "page",
-      "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.solutions",
-      "position": 2
-    },
-    {
-      "id": "home.pricing",
-      "name": "Pricing",
-      "type": "page",
-      "required": true,
+      "required": false,
       "repeatable": false,
       "purpose": null,
       "parent_id": "home",
       "position": 2
     },
     {
-      "id": "home.resources",
-      "name": "Resources",
+      "id": "home.cart",
+      "name": "Cart",
       "type": "page",
-      "required": false,
+      "required": true,
       "repeatable": false,
       "purpose": null,
       "parent_id": "home",
       "position": 3
     },
     {
-      "id": "home.resources.blog",
-      "name": "Blog",
+      "id": "home.checkout",
+      "name": "Checkout",
       "type": "page",
       "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.resources",
-      "position": 0
-    },
-    {
-      "id": "home.resources.documentation",
-      "name": "Documentation",
-      "type": "page",
-      "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.resources",
-      "position": 1
-    },
-    {
-      "id": "home.resources.guides",
-      "name": "Guides",
-      "type": "page",
-      "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.resources",
-      "position": 2
-    },
-    {
-      "id": "home.resources.changelog",
-      "name": "Changelog",
-      "type": "page",
-      "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.resources",
-      "position": 3
-    },
-    {
-      "id": "home.company",
-      "name": "Company",
-      "type": "page",
-      "required": false,
       "repeatable": false,
       "purpose": null,
       "parent_id": "home",
       "position": 4
     },
     {
-      "id": "home.company.about",
-      "name": "About",
+      "id": "home.account",
+      "name": "Account",
       "type": "page",
-      "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.company",
-      "position": 0
-    },
-    {
-      "id": "home.company.careers",
-      "name": "Careers",
-      "type": "page",
-      "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.company",
-      "position": 1
-    },
-    {
-      "id": "home.company.contact",
-      "name": "Contact",
-      "type": "page",
-      "required": true,
-      "repeatable": false,
-      "purpose": null,
-      "parent_id": "home.company",
-      "position": 2
-    },
-    {
-      "id": "home.login",
-      "name": "Login",
-      "type": "page",
-      "required": true,
+      "required": false,
       "repeatable": false,
       "purpose": null,
       "parent_id": "home",
       "position": 5
     },
     {
-      "id": "home.signup",
-      "name": "Signup",
+      "id": "home.account.profile",
+      "name": "Profile",
       "type": "page",
       "required": true,
       "repeatable": false,
       "purpose": null,
+      "parent_id": "home.account",
+      "position": 0
+    },
+    {
+      "id": "home.account.orders",
+      "name": "Orders",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.account",
+      "position": 1
+    },
+    {
+      "id": "home.account.addresses",
+      "name": "Addresses",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.account",
+      "position": 2
+    },
+    {
+      "id": "home.journal",
+      "name": "Journal",
+      "type": "page",
+      "required": false,
+      "repeatable": false,
+      "purpose": null,
       "parent_id": "home",
       "position": 6
+    },
+    {
+      "id": "home.support",
+      "name": "Support",
+      "type": "page",
+      "required": false,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home",
+      "position": 7
     }
   ],
   "links": [
     {
       "source": "home",
-      "target": "home.product",
+      "target": "home.shop",
       "type": "navigation"
     },
     {
       "source": "home",
-      "target": "home.solutions",
+      "target": "home.wishlist",
       "type": "navigation"
     },
     {
       "source": "home",
-      "target": "home.pricing",
+      "target": "home.cart",
       "type": "navigation"
     },
     {
       "source": "home",
-      "target": "home.resources",
+      "target": "home.account",
       "type": "navigation"
     },
     {
       "source": "home",
-      "target": "home.company",
+      "target": "home.journal",
       "type": "navigation"
     },
     {
-      "source": "home",
-      "target": "home.login",
+      "source": "home.shop",
+      "target": "home.shop.category.product",
       "type": "navigation"
     },
     {
-      "source": "home.product",
-      "target": "home.signup",
+      "source": "home.shop.category.product",
+      "target": "home.wishlist",
       "type": "cta"
     },
     {
-      "source": "home.pricing",
-      "target": "home.signup",
+      "source": "home.shop.category.product",
+      "target": "home.cart",
       "type": "cta"
     },
     {
-      "source": "home.solutions",
-      "target": "home.signup",
-      "type": "cta"
-    },
-    {
-      "source": "home.company",
-      "target": "home.company.contact",
+      "source": "home.cart",
+      "target": "home.checkout",
       "type": "navigation"
+    },
+    {
+      "source": "home.checkout",
+      "target": "home.account",
+      "type": "navigation"
+    },
+    {
+      "source": "home.journal",
+      "target": "home.shop",
+      "type": "cta"
     }
   ]
 }

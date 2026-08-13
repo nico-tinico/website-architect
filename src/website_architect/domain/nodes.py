@@ -23,7 +23,7 @@ class PageDefinition:
     node_type: NodeType
     required: bool
     repeatable: bool
-    purpose: str | None
+    purpose: str
     children: tuple["PageDefinition", ...]
 
 
