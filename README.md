@@ -26,18 +26,18 @@ and consumed by other systems.
 
 Website Architect currently supports **10** website profiles
 
-| Type         | Value        |
-| ------------ | ------------ |
-| Landing Page | landing_page |
-| SaaS         | saas         |
-| Agency       | agency       |
-| Portfolio    | portfolio    |
-| Ecommerce    | ecommerce    |
-| Travel       | travel       |
-| Wellness     | wellness     |
-| Fintech      | fintech      |
-| Technology   | technology   |
-| Fashion      | fashion      |
+| Type         | Value          |
+| ------------ | -------------- |
+| Landing Page | `landing_page` |
+| SaaS         | `saas`         |
+| Agency       | `agency`       |
+| Portfolio    | `portfolio`    |
+| Ecommerce    | `ecommerce`    |
+| Travel       | `travel`       |
+| Wellness     | `wellness`     |
+| Fintech      | `fintech`      |
+| Technology   | `technology`   |
+| Fashion      | `fashion`      |
 
 ## Architecture Modes
 
@@ -59,6 +59,26 @@ git clone <repository-url>
 cd website-architect
 python -m pip install -e .
 ```
+
+This installs Website Architect together with its CLI command:
+
+```
+website-architect
+```
+
+Verify the installation:
+
+```
+website-architect --help
+```
+
+### Development installation
+
+To install the development dependencies, including the test suite:
+
+You can then run the complete test suite with:
+
+A successful installation should allow both the Python package and the `website-architect` CLI to be used directly from the environment.
 
 ## CLI
 
