@@ -24,7 +24,7 @@ and consumed by other systems.
 
 ## Supported Website Types
 
-Website Architect currently supports **20** architecture combinations
+Website Architect currently supports **10** website profiles
 
 | Type         | Value        |
 | ------------ | ------------ |
@@ -39,14 +39,26 @@ Website Architect currently supports **20** architecture combinations
 | Technology   | technology   |
 | Fashion      | fashion      |
 
+## Architecture Modes
+
 | Mode        | Value       |
 | ----------- | ----------- |
 | Single Page | single_page |
 | Multi Page  | multi_page  |
 
-## Architecture Modes
-
 ## Installation
+
+Website Architect requires **Python 3.11** or **later**.
+
+### Install from source
+
+Clone the repository and install the package in editable mode:
+
+'''
+git clone <repository-url>
+cd website-architect
+python -m pip install -e .
+'''
 
 ## CLI
 
