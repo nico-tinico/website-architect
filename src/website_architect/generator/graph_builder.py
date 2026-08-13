@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 from website_architect.catalog.definitions import LinkRule
 from website_architect.domain.graph import SiteGraph
 from website_architect.domain.links import Link
 
 
 class GraphBuilder:
+    ROOT_ID = "home"
+
     def build(
         self,
         rules: tuple[LinkRule, ...],
@@ -46,29 +50,32 @@ class GraphBuilder:
             links=tuple(links),
         )
 
-    @staticmethod
+    @classmethod
     def _resolve_node_id(
-        name: str,
+        cls,
+        reference: str,
         node_ids: set[str],
     ) -> str | None:
-        normalized = name.strip().lower().replace(" ", "-")
+        normalized = cls._normalize_reference(reference)
 
-        if normalized in node_ids:
-            return normalized
+        if normalized == cls.ROOT_ID:
+            return cls.ROOT_ID
 
-        matches = [
-            node_id
-            for node_id in node_ids
-            if node_id.endswith(f".{normalized}")
-        ]
+        candidate = f"{cls.ROOT_ID}.{normalized}"
 
-        if len(matches) == 1:
-            return matches[0]
-
-        if len(matches) > 1:
-            raise ValueError(
-                f"Ambiguous node reference '{name}'. "
-                f"Matches: {sorted(matches)}"
-            )
+        if candidate in node_ids:
+            return candidate
 
         return None
+
+    @staticmethod
+    def _normalize_reference(reference: str) -> str:
+        parts = reference.strip().split(".")
+
+        normalized_parts = [
+            part.strip().lower().replace(" ", "-")
+            for part in parts
+            if part.strip()
+        ]
+
+        return ".".join(normalized_parts)

@@ -8,6 +8,19 @@ from website_architect.domain.nodes import PageDefinition
 
 @dataclass(frozen=True, slots=True)
 class LinkRule:
+    """
+    Defines a semantic relationship between two nodes.
+
+    References are expressed as semantic paths relative to the website root.
+
+    Examples:
+        Product
+        Product.Security
+        Solutions.Enterprise
+        Resources.Documentation
+        Account.Wishlist
+    """
+
     source: str
     target: str
     link_type: LinkType
