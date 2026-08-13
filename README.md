@@ -1,50 +1,42 @@
+<p align="center">
+  <img src="docs/assets/website-architect.png" alt="Website Architect" width="900">
+</p>
+
 # Website Architect
 
-Website Architect is a Python package and CLI for generating
-website information architectures from reusable, catalog-driven
-site profiles.
+**Website Architect** is a Python package and CLI for generating validated
+website information architectures from reusable, catalog-driven site profiles.
 
-It transforms a website type and architecture mode into a
-validated structural model that can be serialized as JSON
-and consumed by other systems.
+Define a website type and an architecture mode, and Website Architect
+generates a complete structural model including pages, sections, collections,
+reusable templates, and navigation relationships.
+
+The resulting architecture can be validated, serialized to JSON, deserialized,
+and consumed by other tools and systems.
 
 ## Features
 
-- Catalog-driven architecture generation
-- Reusable website profiles
-- Single-page and multi-page architectures
-- Hierarchical, sequential, and matrix topologies
-- Runtime templates
-- Collections and dynamic entry points
-- Semantic architecture validation
-- Graph-based navigation relationships
-- JSON serialization and deserialization
-- CLI interface
-- Deterministic architecture generation
-
-## Supported Website Types
-
-Website Architect currently supports **10** website profiles
-
-| Type         | Value          |
-| ------------ | -------------- |
-| Landing Page | `landing_page` |
-| SaaS         | `saas`         |
-| Agency       | `agency`       |
-| Portfolio    | `portfolio`    |
-| Ecommerce    | `ecommerce`    |
-| Travel       | `travel`       |
-| Wellness     | `wellness`     |
-| Fintech      | `fintech`      |
-| Technology   | `technology`   |
-| Fashion      | `fashion`      |
-
-## Architecture Modes
-
-| Mode        | Value         |
-| ----------- | ------------- |
-| Single Page | `single_page` |
-| Multi Page  | `multi_page`  |
+- **Catalog-driven generation** — reusable site profiles define the architecture.
+- **10 website types** — Landing Page, SaaS, Agency, Portfolio, Ecommerce,
+  Travel, Wellness, Fintech, Technology, and Fashion.
+- **Single-page and multi-page architectures** — generate both structural models.
+- **Multiple topologies** — Sequential, Hierarchical, and Matrix.
+- **Reusable templates** — model repeatable content entities independently from
+  the navigation structure.
+- **Collections and entry points** — connect dynamic content structures to
+  reusable templates.
+- **Semantic validation** — enforce structural and template-reference
+  constraints at the domain level.
+- **Graph-based relationships** — represent navigation and CTA relationships
+  between architecture nodes.
+- **JSON serialization** — export architectures in a structured,
+  machine-readable format.
+- **JSON deserialization and round-trip** — restore and validate previously
+  generated architectures.
+- **Python API and CLI** — use Website Architect programmatically or directly
+  from the terminal.
+- **Deterministic generation** — the same profile and configuration produce
+  the same architecture.
 
 ## Installation
 
