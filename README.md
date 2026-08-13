@@ -605,6 +605,108 @@ As a result, a generated architecture is not merely a JSON structure: it is a **
 
 ## Development
 
+Website Architect is designed as a modular Python package with a clear separation between the domain model, architecture catalog, generation pipeline, serialization, and command-line interface.
+
+### Project structure
+
+```
+src/
+└── website_architect/
+    ├── catalog/
+    │   ├── definitions.py
+    │   ├── profiles.py
+    │   └── ...
+    │
+    ├── domain/
+    │   ├── architecture.py
+    │   ├── enums.py
+    │   ├── graph.py
+    │   ├── links.py
+    │   ├── nodes.py
+    │   └── templates.py
+    │
+    ├── generator/
+    │   ├── generator.py
+    │   └── graph_builder.py
+    │
+    ├── serializer/
+    │   └── json.py
+    │
+    └── cli.py
+
+tests/
+├── catalog/
+├── domain/
+├── generator/
+├── serializer/
+├── cli/
+└── final/
+```
+
+### Development environment
+
+Create a virtual environment:
+
+```
+python -m venv .venv
+```
+
+Activate it on Windows:
+
+```
+.venv\Scripts\Activate.ps1
+```
+
+Install the package with development dependencies:
+
+```
+python -m pip install -e ".[dev]"
+```
+
+### Running tests
+
+The complete test suite can be executed with:
+
+```
+python -m pytest
+```
+
+The release test matrix covers all supported website types and both architecture modes.
+
+For the 1.0.0 release, the complete suite consists of **326 tests**.
+
+### Development workflow
+
+When modifying the project, the recommended workflow is:
+
+1. Modify the relevant domain, catalog, generator, serializer, or CLI component.
+2. Add or update the corresponding tests.
+3. Run the complete test suite.
+4. Verify CLI behavior when the change affects the command-line interface.
+5. Verify serialization and round-trip behavior when the architecture model changes.
+
+The catalog should remain the primary source for website-specific architecture definitions. Generator logic should remain generic and should not contain profile-specific website structures.
+
+### Design principle
+
+The project follows a **catalog-driven architecture**:
+
+```
+Catalog
+   ↓
+Generator
+   ↓
+Domain Model
+   ↓
+Validation
+   ↓
+Serialization
+   ↓
+CLI / External Consumers
+```
+
+This separation allows new website profiles to be introduced without duplicating architecture-generation logic.
+
 ## Testing
 
 ## License
