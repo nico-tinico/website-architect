@@ -571,15 +571,13 @@ Site Profile
     ├── Page Definitions
     ├── Template Definitions
     └── Link Rules
-            │
-            ▼
+            ↓
         Architecture Generator
-            │
-            ▼
+            ↓
         Site Architecture
               │
         ┌─────┼─────┐
-        ▼     ▼     ▼
+        ↓     ↓     ↓
       Nodes Templates Graph
 ```
 
@@ -709,4 +707,88 @@ This separation allows new website profiles to be introduced without duplicating
 
 ## Testing
 
+Website Architect uses `pytest` as its testing framework.
+
+The test suite is organized around the main architectural layers of the project:
+
+```
+tests/
+├── catalog/
+├── domain/
+├── generator/
+├── serializer/
+├── cli/
+└── final/
+```
+
+### Test coverage
+
+Tests cover:
+
+- catalog definitions and profiles
+- domain models and semantic validation
+- template references
+- architecture generation
+- graph construction
+- JSON serialization
+- JSON deserialization
+- serialization round-trip
+- CLI commands and arguments
+- generated output files
+- all supported website types and architecture modes
+
+### Final test matrix
+
+The final integration matrix validates all supported combinations:
+
+**10 website types × 2 architecture modes = 20 combinations**
+
+Each combination is tested through the complete generation pipeline, including:
+
+```
+Catalog
+    ↓
+Generation
+    ↓
+Domain Validation
+    ↓
+Graph Validation
+    ↓
+Serialization
+    ↓
+Deserialization
+    ↓
+Round-trip
+    ↓
+CLI
+```
+
+The final **1.0.0** test suite contains **326 tests**, all passing.
+
+### Running the test suite
+
+Run all tests with:
+
+```
+python -m pytest
+```
+
+For verbose output:
+
+```
+python -m pytest -v
+```
+
+A successful release validation should conclude with:
+
+```
+326 passed
+```
+
+The test suite is considered a required validation step before creating a release.
+
 ## License
+
+Website Architect is licensed under the MIT License.
+
+See the [LICENSE](LICENSE) file for the full license text.
