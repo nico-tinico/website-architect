@@ -12,14 +12,27 @@ class GraphBuilder:
         links: list[Link] = []
 
         for rule in rules:
-            source_id = self._resolve_node_id(rule.source, node_ids)
-            target_id = self._resolve_node_id(rule.target, node_ids)
+            source_id = self._resolve_node_id(
+                rule.source,
+                node_ids,
+            )
 
             if source_id is None:
-                continue
+                raise ValueError(
+                    f"Unable to resolve link source: "
+                    f"'{rule.source}'."
+                )
+
+            target_id = self._resolve_node_id(
+                rule.target,
+                node_ids,
+            )
 
             if target_id is None:
-                continue
+                raise ValueError(
+                    f"Unable to resolve link target: "
+                    f"'{rule.target}'."
+                )
 
             links.append(
                 Link(
@@ -38,7 +51,7 @@ class GraphBuilder:
         name: str,
         node_ids: set[str],
     ) -> str | None:
-        normalized = name.lower().replace(" ", "-")
+        normalized = name.strip().lower().replace(" ", "-")
 
         if normalized in node_ids:
             return normalized
@@ -51,5 +64,11 @@ class GraphBuilder:
 
         if len(matches) == 1:
             return matches[0]
+
+        if len(matches) > 1:
+            raise ValueError(
+                f"Ambiguous node reference '{name}'. "
+                f"Matches: {sorted(matches)}"
+            )
 
         return None
