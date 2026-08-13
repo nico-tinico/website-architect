@@ -123,9 +123,76 @@ On Windows PowerShell, the same command can be written on a single line:
 website-architect generate --type ecommerce --mode multi_page --output ecommerce.json
 ```
 
-### Generate an architecture
-
 ### Options
+
+The `generate` command accepts the following options:
+
+| Option     | Description                               |
+| ---------- | ----------------------------------------- |
+| `--type`   | Website type to generate                  |
+| `--mode`   | Architecture mode                         |
+| `--output` | Optional path for the generated JSON file |
+
+### Supported website types
+
+```
+landing_page
+saas
+agency
+portfolio
+ecommerce
+travel
+wellness
+fintech
+technology
+fashion
+```
+
+### Supported modes
+
+```
+single_page
+multi_page
+```
+
+### Examples
+
+Generate a single-page SaaS architecture:
+
+```
+website-architect generate --type saas --mode single_page
+```
+
+Generate a multi-page agency architecture:
+
+```
+website-architect generate --type agency --mode multi_page
+```
+
+Generate a multi-page portfolio and save it to a file:
+
+```
+website-architect generate \
+ --type portfolio \
+ --mode multi_page \
+ --output portfolio.json
+```
+
+### Help
+
+Display the available CLI commands:
+
+```
+website-architect --help
+```
+
+Display the options for the `generate` command:
+
+```
+website-architect generate --help
+```
+
+The CLI uses the same architecture generation pipeline as the Python API, ensuring that architectures generated from the terminal follow the same catalog definitions, validation rules, templates, graph relationships, and JSON serialization contract.
 
 ## Python API
 
