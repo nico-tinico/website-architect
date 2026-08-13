@@ -66,7 +66,7 @@ class ArchitectureGenerator:
             node_ids=node_ids,
         )
 
-        return SiteArchitecture(
+        architecture = SiteArchitecture(
             version=self.VERSION,
             site_type=site_type,
             mode=mode,
@@ -75,6 +75,10 @@ class ArchitectureGenerator:
             nodes=tuple(nodes),
             graph=graph,
         )
+
+        architecture.validate()
+
+        return architecture
 
     def _build_nodes(
         self,
