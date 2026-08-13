@@ -26,17 +26,18 @@ and consumed by other systems.
 
 Website Architect currently supports **20** architecture combinations
 
-| Type | Value |
+| Type         | Value        |
+| ------------ | ------------ |
 | Landing Page | landing_page |
-| SaaS | saas |
-| Agency | agency |
-| Portfolio | portfolio |
-| Ecommerce | ecommerce |
-| Travel | travel |
-| Wellness | wellness |
-| Fintech | fintech |
-| Technology | technology |
-| Fashion | fashion |
+| SaaS         | saas         |
+| Agency       | agency       |
+| Portfolio    | portfolio    |
+| Ecommerce    | ecommerce    |
+| Travel       | travel       |
+| Wellness     | wellness     |
+| Fintech      | fintech      |
+| Technology   | technology   |
+| Fashion      | fashion      |
 
 | Mode        | Value       |
 | ----------- | ----------- |
