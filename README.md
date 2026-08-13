@@ -54,11 +54,11 @@ Website Architect requires **Python 3.11** or **later**.
 
 Clone the repository and install the package in editable mode:
 
-'''
+```
 git clone <repository-url>
 cd website-architect
 python -m pip install -e .
-'''
+```
 
 ## CLI
 
