@@ -288,6 +288,137 @@ The Python API and CLI use the same underlying generation pipeline. This means a
 
 ## Output Format
 
+Website Architect generates a structured JSON representation of the website architecture.
+
+The output is designed to be deterministic, machine-readable, and suitable for consumption by other tools or systems.
+
+A generated architecture follows this structure:
+
+```
+{
+  "version": "1.0",
+  "site": {
+    "type": "ecommerce",
+    "mode": "multi_page",
+    "topology": "matrix"
+  },
+  "root_id": "home",
+  "nodes": [],
+  "templates": [],
+  "links": []
+}
+```
+
+### Top-level fields
+
+| Field       | Description                                       |
+| ----------- | ------------------------------------------------- |
+| `version`   | Architecture schema version                       |
+| `site`      | Website type, mode, and topology                  |
+| `root_id`   | Identifier of the root architecture node          |
+| `nodes`     | Concrete nodes composing the website architecture |
+| `templates` | Reusable content templates                        |
+| `links`     | Relationships between architecture nodes          |
+
+### Site
+
+The `site` object describes the high-level configuration:
+
+```
+{
+  "type": "ecommerce",
+  "mode": "multi_page",
+  "topology": "matrix"
+}
+```
+
+`type` identifies the website profile, while `mode` determines whether the architecture is single-page or multi-page. `topology` describes the structural organization of the generated architecture.
+
+### Nodes
+
+Each node represents a concrete element of the website information architecture:
+
+```
+{
+  "id": "home.shop",
+  "name": "Shop",
+  "type": "page",
+  "required": true,
+  "repeatable": false,
+  "purpose": "Provide the main product discovery and browsing experience for the store.",
+  "parent_id": "home",
+  "position": 0
+}
+```
+
+Depending on the node type, a node can also contain a template reference:
+
+```
+{
+  "id": "home.shop.category",
+  "name": "Category",
+  "type": "collection",
+  "required": true,
+  "repeatable": false,
+  "purpose": "Organize products into meaningful categories for browsing and discovery.",
+  "parent_id": "home.shop",
+  "position": 0,
+  "item_template": "product"
+}
+```
+
+Entry points use `target_template` instead:
+
+```
+{
+  "id": "home.product",
+  "name": "Product",
+  "type": "entry_point",
+  "required": true,
+  "repeatable": false,
+  "purpose": "Provide direct access to individual product pages.",
+  "parent_id": "home",
+  "position": 1,
+  "target_template": "product"
+}
+```
+
+### Templates
+
+Templates define reusable structures for repeatable content entities:
+
+```
+{
+  "id": "product",
+  "name": "Product",
+  "type": "template",
+  "required": true,
+  "repeatable": true,
+  "purpose": "Present an individual product and support product evaluation and purchase."
+}
+```
+
+Collections reference templates through `item_template`, while entry points reference them through `target_template`.
+
+### Links
+
+Links describe relationships between architecture nodes:
+
+```
+{
+  "source": "home.shop",
+  "target": "home.product",
+  "type": "navigation"
+}
+```
+
+The supported link types are:
+
+- `navigation`
+- `cta`
+
+Together, `nodes`, `templates`, and `links` provide a complete machine-readable representation of the generated website architecture.
+
 ## Architecture Model
 
 ## Development
