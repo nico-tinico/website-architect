@@ -112,9 +112,9 @@ To save the generated architecture as a JSON file, use `--output`:
 
 ```
 website-architect generate \
-  --type ecommerce \
-  --mode multi_page \
-  --output ecommerce.json
+    --type ecommerce \
+    --mode multi_page \
+    --output ecommerce.json
 ```
 
 On Windows PowerShell, the same command can be written on a single line:
@@ -173,9 +173,9 @@ Generate a multi-page portfolio and save it to a file:
 
 ```
 website-architect generate \
- --type portfolio \
- --mode multi_page \
- --output portfolio.json
+    --type portfolio \
+    --mode multi_page \
+    --output portfolio.json
 ```
 
 ### Help
@@ -296,16 +296,16 @@ A generated architecture follows this structure:
 
 ```
 {
-  "version": "1.0",
-  "site": {
-    "type": "ecommerce",
-    "mode": "multi_page",
-    "topology": "matrix"
-  },
-  "root_id": "home",
-  "nodes": [],
-  "templates": [],
-  "links": []
+    "version": "1.0",
+    "site": {
+        "type": "ecommerce",
+        "mode": "multi_page",
+        "topology": "matrix"
+    },
+    "root_id": "home",
+    "nodes": [],
+    "templates": [],
+    "links": []
 }
 ```
 
@@ -326,9 +326,9 @@ The `site` object describes the high-level configuration:
 
 ```
 {
-  "type": "ecommerce",
-  "mode": "multi_page",
-  "topology": "matrix"
+    "type": "ecommerce",
+    "mode": "multi_page",
+    "topology": "matrix"
 }
 ```
 
@@ -340,14 +340,14 @@ Each node represents a concrete element of the website information architecture:
 
 ```
 {
-  "id": "home.shop",
-  "name": "Shop",
-  "type": "page",
-  "required": true,
-  "repeatable": false,
-  "purpose": "Provide the main product discovery and browsing experience for the store.",
-  "parent_id": "home",
-  "position": 0
+    "id": "home.shop",
+    "name": "Shop",
+    "type": "page",
+    "required": true,
+    "repeatable": false,
+    "purpose": "Provide the main product discovery and browsing experience for the store.",
+    "parent_id": "home",
+    "position": 0
 }
 ```
 
@@ -355,15 +355,15 @@ Depending on the node type, a node can also contain a template reference:
 
 ```
 {
-  "id": "home.shop.category",
-  "name": "Category",
-  "type": "collection",
-  "required": true,
-  "repeatable": false,
-  "purpose": "Organize products into meaningful categories for browsing and discovery.",
-  "parent_id": "home.shop",
-  "position": 0,
-  "item_template": "product"
+    "id": "home.shop.category",
+    "name": "Category",
+    "type": "collection",
+    "required": true,
+    "repeatable": false,
+    "purpose": "Organize products into meaningful categories for browsing and discovery.",
+    "parent_id": "home.shop",
+    "position": 0,
+    "item_template": "product"
 }
 ```
 
@@ -371,15 +371,15 @@ Entry points use `target_template` instead:
 
 ```
 {
-  "id": "home.product",
-  "name": "Product",
-  "type": "entry_point",
-  "required": true,
-  "repeatable": false,
-  "purpose": "Provide direct access to individual product pages.",
-  "parent_id": "home",
-  "position": 1,
-  "target_template": "product"
+    "id": "home.product",
+    "name": "Product",
+    "type": "entry_point",
+    "required": true,
+    "repeatable": false,
+    "purpose": "Provide direct access to individual product pages.",
+    "parent_id": "home",
+    "position": 1,
+    "target_template": "product"
 }
 ```
 
@@ -389,12 +389,12 @@ Templates define reusable structures for repeatable content entities:
 
 ```
 {
-  "id": "product",
-  "name": "Product",
-  "type": "template",
-  "required": true,
-  "repeatable": true,
-  "purpose": "Present an individual product and support product evaluation and purchase."
+    "id": "product",
+    "name": "Product",
+    "type": "template",
+    "required": true,
+    "repeatable": true,
+    "purpose": "Present an individual product and support product evaluation and purchase."
 }
 ```
 
@@ -406,9 +406,9 @@ Links describe relationships between architecture nodes:
 
 ```
 {
-  "source": "home.shop",
-  "target": "home.product",
-  "type": "navigation"
+    "source": "home.shop",
+    "target": "home.product",
+    "type": "navigation"
 }
 ```
 
@@ -431,21 +431,21 @@ Core concepts
 Site Architecture
 │
 ├── Site configuration
-│ ├── Type
-│ ├── Mode
-│ └── Topology
+│   ├── Type
+│   ├── Mode
+│   └── Topology
 │
 ├── Nodes
-│ ├── Pages
-│ ├── Sections
-│ ├── Collections
-│ └── Entry Points
+│   ├── Pages
+│   ├── Sections
+│   ├── Collections
+│   └── Entry Points
 │
 ├── Templates
-│ └── Reusable content structures
+│   └── Reusable content structures
 │
 └── Graph
-└── Relationships between nodes
+    └── Relationships between nodes
 ```
 
 ### Site Architecture
@@ -465,14 +465,14 @@ It contains:
 
 ```
 SiteArchitecture(
-version="1.0",
-site_type=SiteType.ECOMMERCE,
-mode=SiteMode.MULTI_PAGE,
-topology=Topology.MATRIX,
-root_id="home",
-nodes=...,
-templates=...,
-graph=...,
+    version="1.0",
+    site_type=SiteType.ECOMMERCE,
+    mode=SiteMode.MULTI_PAGE,
+    topology=Topology.MATRIX,
+    root_id="home",
+    nodes=...,
+    templates=...,
+    graph=...,
 )
 ```
 
@@ -498,21 +498,21 @@ For example:
 ```
 home
 └── shop
-└── category
+    └── category
 ```
 
 A collection can reference the template used for its items:
 
 ```
 Category
-└── item_template → product
+    └── item_template → product
 ```
 
 An entry point can expose the corresponding individual template:
 
 ```
 Product
-└── target_template → product
+    └── target_template → product
 ```
 
 ### Templates
@@ -553,8 +553,8 @@ For example:
 
 ```
 home.shop
-│
-└── navigation → home.product
+    │
+    └── navigation → home.product
 ```
 
 The graph is therefore complementary to the node hierarchy: `parent_id` describes structural containment, while graph links describe relationships and navigation flows.
@@ -567,20 +567,20 @@ The relationship between the catalog and runtime model is:
 
 ```
 Site Profile
-│
-├── Page Definitions
-├── Template Definitions
-└── Link Rules
-│
-▼
-Architecture Generator
-│
-▼
-Site Architecture
-│
-┌─────┼─────┐
-▼ ▼ ▼
-Nodes Templates Graph
+    │
+    ├── Page Definitions
+    ├── Template Definitions
+    └── Link Rules
+            │
+            ▼
+        Architecture Generator
+            │
+            ▼
+        Site Architecture
+              │
+        ┌─────┼─────┐
+        ▼     ▼     ▼
+      Nodes Templates Graph
 ```
 
 This separation allows website profiles to define **what an architecture should contain**, while the generator produces the concrete runtime representation.
