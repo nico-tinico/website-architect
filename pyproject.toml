@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "website-architect"
-version = "0.1.0"
+version = "1.0.0"
 description = "Generate website information architectures from reusable site profiles."
 requires-python = ">=3.11"
 dependencies = []
