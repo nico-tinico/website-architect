@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "website-architect"
+version = "0.1.0"
+description = "Generate website information architectures from reusable site profiles."
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+website-architect = "website_architect.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

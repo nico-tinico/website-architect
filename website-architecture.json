@@ -1,0 +1,283 @@
+{
+  "version": "1.0",
+  "site": {
+    "type": "saas",
+    "mode": "multi_page",
+    "topology": "hierarchical"
+  },
+  "root_id": "home",
+  "nodes": [
+    {
+      "id": "home",
+      "name": "Home",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": "Website home page.",
+      "parent_id": null,
+      "position": 0
+    },
+    {
+      "id": "home.product",
+      "name": "Product",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home",
+      "position": 0
+    },
+    {
+      "id": "home.product.overview",
+      "name": "Overview",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.product",
+      "position": 0
+    },
+    {
+      "id": "home.product.features",
+      "name": "Features",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.product",
+      "position": 1
+    },
+    {
+      "id": "home.product.integrations",
+      "name": "Integrations",
+      "type": "page",
+      "required": false,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.product",
+      "position": 2
+    },
+    {
+      "id": "home.product.security",
+      "name": "Security",
+      "type": "page",
+      "required": false,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.product",
+      "position": 3
+    },
+    {
+      "id": "home.solutions",
+      "name": "Solutions",
+      "type": "page",
+      "required": false,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home",
+      "position": 1
+    },
+    {
+      "id": "home.solutions.startups",
+      "name": "Startups",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.solutions",
+      "position": 0
+    },
+    {
+      "id": "home.solutions.teams",
+      "name": "Teams",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.solutions",
+      "position": 1
+    },
+    {
+      "id": "home.solutions.enterprise",
+      "name": "Enterprise",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.solutions",
+      "position": 2
+    },
+    {
+      "id": "home.pricing",
+      "name": "Pricing",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home",
+      "position": 2
+    },
+    {
+      "id": "home.resources",
+      "name": "Resources",
+      "type": "page",
+      "required": false,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home",
+      "position": 3
+    },
+    {
+      "id": "home.resources.blog",
+      "name": "Blog",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.resources",
+      "position": 0
+    },
+    {
+      "id": "home.resources.documentation",
+      "name": "Documentation",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.resources",
+      "position": 1
+    },
+    {
+      "id": "home.resources.guides",
+      "name": "Guides",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.resources",
+      "position": 2
+    },
+    {
+      "id": "home.resources.changelog",
+      "name": "Changelog",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.resources",
+      "position": 3
+    },
+    {
+      "id": "home.company",
+      "name": "Company",
+      "type": "page",
+      "required": false,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home",
+      "position": 4
+    },
+    {
+      "id": "home.company.about",
+      "name": "About",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.company",
+      "position": 0
+    },
+    {
+      "id": "home.company.careers",
+      "name": "Careers",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.company",
+      "position": 1
+    },
+    {
+      "id": "home.company.contact",
+      "name": "Contact",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home.company",
+      "position": 2
+    },
+    {
+      "id": "home.login",
+      "name": "Login",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home",
+      "position": 5
+    },
+    {
+      "id": "home.signup",
+      "name": "Signup",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": null,
+      "parent_id": "home",
+      "position": 6
+    }
+  ],
+  "links": [
+    {
+      "source": "home",
+      "target": "home.product",
+      "type": "navigation"
+    },
+    {
+      "source": "home",
+      "target": "home.solutions",
+      "type": "navigation"
+    },
+    {
+      "source": "home",
+      "target": "home.pricing",
+      "type": "navigation"
+    },
+    {
+      "source": "home",
+      "target": "home.resources",
+      "type": "navigation"
+    },
+    {
+      "source": "home",
+      "target": "home.company",
+      "type": "navigation"
+    },
+    {
+      "source": "home",
+      "target": "home.login",
+      "type": "navigation"
+    },
+    {
+      "source": "home.product",
+      "target": "home.signup",
+      "type": "cta"
+    },
+    {
+      "source": "home.pricing",
+      "target": "home.signup",
+      "type": "cta"
+    },
+    {
+      "source": "home.solutions",
+      "target": "home.signup",
+      "type": "cta"
+    },
+    {
+      "source": "home.company",
+      "target": "home.company.contact",
+      "type": "navigation"
+    }
+  ]
+}
