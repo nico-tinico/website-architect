@@ -660,6 +660,7 @@ python -m pytest
 ```
 
 The release test matrix covers all supported website types and both architecture modes.
+The 326 tests are parameterized pytest tests, not 326 ```test_*``` functions.
 
 For the 1.0.0 release, the complete suite consists of **326 tests**.
 
