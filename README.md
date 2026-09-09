@@ -231,7 +231,7 @@ This verifies structural and semantic constraints, including node relationships,
 Use `JsonSerializer` to convert an architecture into the JSON representation:
 
 ```
-from website_architect.serializer.json import JsonSerializer
+from website_architect.serializers.json import JsonSerializer
 
 
 serializer = JsonSerializer()
@@ -259,7 +259,7 @@ A complete generation workflow can therefore be written as:
 ```
 from website_architect.domain.enums import SiteMode, SiteType
 from website_architect.generator.generator import ArchitectureGenerator
-from website_architect.serializer.json import JsonSerializer
+from website_architect.serializers.json import JsonSerializer
 
 
 generator = ArchitectureGenerator()
@@ -619,7 +619,7 @@ src/
     │   ├── generator.py
     │   └── graph_builder.py
     │
-    ├── serializer/
+    ├── serializers/
     │   └── json.py
     │
     └── cli.py
@@ -628,9 +628,7 @@ tests/
 ├── catalog/
 ├── domain/
 ├── generator/
-├── serializer/
-├── cli/
-└── final/
+└── cli/
 ```
 
 ### Development environment
