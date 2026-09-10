@@ -2,8 +2,6 @@
   <img src="docs/assets/website-architect.png" alt="Website Architect" width="900">
 </p>
 
-# Website Architect
-
 **Website Architect** is a Python package and CLI for generating validated
 website information architectures from reusable, catalog-driven site profiles.
 
