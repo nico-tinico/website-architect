@@ -3,14 +3,14 @@ requires = ["setuptools>=83.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "website-architect"
+name = "structio"
 version = "1.0.0"
 description = "Generate website information architectures from reusable site profiles."
 requires-python = ">=3.11"
 dependencies = []
 
 [project.scripts]
-website-architect = "website_architect.cli:main"
+structio = "structio.cli:main"
 
 [project.optional-dependencies]
 dev = [

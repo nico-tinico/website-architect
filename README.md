@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="docs/assets/website-architect.png" alt="Website Architect" width="900">
+  <img src="docs/assets/structio.png" alt="Structio" width="900">
 </p>
 
-**Website Architect** is a Python package and CLI for generating validated
+**Structio** is a Python package and CLI for generating validated
 website information architectures from reusable, catalog-driven site profiles.
 
-Define a website type and an architecture mode, and Website Architect
+Define a website type and an architecture mode, and Structio
 generates a complete structural model including pages, sections, collections,
 reusable templates, and navigation relationships.
 
@@ -31,14 +31,14 @@ and consumed by other tools and systems.
   machine-readable format.
 - **JSON deserialization and round-trip** — restore and validate previously
   generated architectures.
-- **Python API and CLI** — use Website Architect programmatically or directly
+- **Python API and CLI** — use Structio programmatically or directly
   from the terminal.
 - **Deterministic generation** — the same profile and configuration produce
   the same architecture.
 
 ## Installation
 
-Website Architect requires **Python 3.11** or **later**.
+Structio requires **Python 3.11** or **later**.
 
 ### Install from source
 
@@ -46,20 +46,20 @@ Clone the repository and install the package in editable mode:
 
 ```
 git clone <repository-url>
-cd website-architect
+cd structio
 python -m pip install -e .
 ```
 
-This installs Website Architect together with its CLI command:
+This installs Structio together with its CLI command:
 
 ```
-website-architect
+structio
 ```
 
 Verify the installation:
 
 ```
-website-architect --help
+structio --help
 ```
 
 ### Development installation
@@ -76,16 +76,16 @@ You can then run the complete test suite with:
 python -m pytest
 ```
 
-A successful installation should allow both the Python package and the `website-architect` CLI to be used directly from the environment.
+A successful installation should allow both the Python package and the `structio` CLI to be used directly from the environment.
 
 ## CLI
 
-Website Architect provides a command-line interface for generating website architectures directly from the terminal.
+Structio provides a command-line interface for generating website architectures directly from the terminal.
 
 The main command is:
 
 ```
-website-architect
+structio
 ```
 
 ### Generate an architecture
@@ -93,7 +93,7 @@ website-architect
 Use the generate command:
 
 ```
-website-architect generate --type ecommerce --mode multi_page
+structio generate --type ecommerce --mode multi_page
 ```
 
 By default, the generated architecture is written to standard output.
@@ -101,7 +101,7 @@ By default, the generated architecture is written to standard output.
 To save the generated architecture as a JSON file, use `--output`:
 
 ```
-website-architect generate \
+structio generate \
     --type ecommerce \
     --mode multi_page \
     --output ecommerce.json
@@ -110,7 +110,7 @@ website-architect generate \
 On Windows PowerShell, the same command can be written on a single line:
 
 ```
-website-architect generate --type ecommerce --mode multi_page --output ecommerce.json
+structio generate --type ecommerce --mode multi_page --output ecommerce.json
 ```
 
 ### Options
@@ -150,19 +150,19 @@ multi_page
 Generate a single-page SaaS architecture:
 
 ```
-website-architect generate --type saas --mode single_page
+structio generate --type saas --mode single_page
 ```
 
 Generate a multi-page agency architecture:
 
 ```
-website-architect generate --type agency --mode multi_page
+structio generate --type agency --mode multi_page
 ```
 
 Generate a multi-page portfolio and save it to a file:
 
 ```
-website-architect generate \
+structio generate \
     --type portfolio \
     --mode multi_page \
     --output portfolio.json
@@ -173,26 +173,26 @@ website-architect generate \
 Display the available CLI commands:
 
 ```
-website-architect --help
+structio --help
 ```
 
 Display the options for the `generate` command:
 
 ```
-website-architect generate --help
+structio generate --help
 ```
 
 The CLI uses the same architecture generation pipeline as the Python API, ensuring that architectures generated from the terminal follow the same catalog definitions, validation rules, templates, graph relationships, and JSON serialization contract.
 
 ## Python API
 
-Website Architect can also be used as a Python library, allowing generated architectures to be integrated directly into other applications and workflows.
+Structio can also be used as a Python library, allowing generated architectures to be integrated directly into other applications and workflows.
 
 ### Generate an architecture
 
 ```
-from website_architect.domain.enums import SiteMode, SiteType
-from website_architect.generator.generator import ArchitectureGenerator
+from structio.domain.enums import SiteMode, SiteType
+from structio.generator.generator import ArchitectureGenerator
 
 
 generator = ArchitectureGenerator()
@@ -229,7 +229,7 @@ This verifies structural and semantic constraints, including node relationships,
 Use `JsonSerializer` to convert an architecture into the JSON representation:
 
 ```
-from website_architect.serializers.json import JsonSerializer
+from structio.serializers.json import JsonSerializer
 
 
 serializer = JsonSerializer()
@@ -255,9 +255,9 @@ serializer.save(
 A complete generation workflow can therefore be written as:
 
 ```
-from website_architect.domain.enums import SiteMode, SiteType
-from website_architect.generator.generator import ArchitectureGenerator
-from website_architect.serializers.json import JsonSerializer
+from structio.domain.enums import SiteMode, SiteType
+from structio.generator.generator import ArchitectureGenerator
+from structio.serializers.json import JsonSerializer
 
 
 generator = ArchitectureGenerator()
@@ -278,7 +278,7 @@ The Python API and CLI use the same underlying generation pipeline. This means a
 
 ## Output Format
 
-Website Architect generates a structured JSON representation of the website architecture.
+Structio generates a structured JSON representation of the website architecture.
 
 The output is designed to be deterministic, machine-readable, and suitable for consumption by other tools or systems.
 
@@ -411,7 +411,7 @@ Together, `nodes`, `templates`, and `links` provide a complete machine-readable 
 
 ## Architecture Model
 
-Website Architect represents a website as a structured information architecture composed of **nodes**, **templates**, and **relationships**.
+Structio represents a website as a structured information architecture composed of **nodes**, **templates**, and **relationships**.
 
 The model separates the reusable definitions stored in the catalog from the concrete architecture generated for a specific website type and mode.
 
@@ -472,7 +472,7 @@ The generated architecture is validated before being returned by the generator.
 
 A `Node` represents a concrete element of the generated information architecture.
 
-Website Architect supports the following node types:
+Structio supports the following node types:
 
 | Type          | Purpose                                                |
 | ------------- | ------------------------------------------------------ |
@@ -593,13 +593,13 @@ As a result, a generated architecture is not merely a JSON structure: it is a **
 
 ## Development
 
-Website Architect is designed as a modular Python package with a clear separation between the domain model, architecture catalog, generation pipeline, serialization, and command-line interface.
+Structio is designed as a modular Python package with a clear separation between the domain model, architecture catalog, generation pipeline, serialization, and command-line interface.
 
 ### Project structure
 
 ```
 src/
-└── website_architect/
+└── structio/
     ├── catalog/
     │   ├── definitions.py
     │   ├── profiles.py
@@ -696,7 +696,7 @@ This separation allows new website profiles to be introduced without duplicating
 
 ## Testing
 
-Website Architect uses `pytest` as its testing framework.
+Structio uses `pytest` as its testing framework.
 
 The test suite is organized around the main architectural layers of the project:
 
@@ -778,6 +778,6 @@ The test suite is considered a required validation step before creating a releas
 
 ## License
 
-Website Architect is licensed under the MIT License.
+Structio is licensed under the MIT License.
 
 See the [LICENSE](LICENSE) file for the full license text.

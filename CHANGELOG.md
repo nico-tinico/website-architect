@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Website Architect are documented in this file.
+All notable changes to Structio are documented in this file.
 
 The format is based on Keep a Changelog,
 and this project follows Semantic Versioning.
