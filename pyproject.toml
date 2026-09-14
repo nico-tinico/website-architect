@@ -7,7 +7,9 @@ name = "structio"
 version = "1.0.0"
 description = "Generate website information architectures from reusable site profiles."
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "rich>=14.0.0",
+]
 
 [project.scripts]
 structio = "structio.cli:main"
