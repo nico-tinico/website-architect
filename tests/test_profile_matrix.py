@@ -1,8 +1,8 @@
 import pytest
 
-from website_architect.catalog.profiles import PROFILES
-from website_architect.domain.enums import SiteMode, SiteType
-from website_architect.generator.generator import ArchitectureGenerator
+from structio.catalog.profiles import PROFILES
+from structio.domain.enums import SiteMode, SiteType
+from structio.generator.generator import ArchitectureGenerator
 
 
 @pytest.mark.parametrize(

@@ -1,9 +1,9 @@
 import json
 import pytest
 
-from website_architect.cli import main
-from website_architect.domain.enums import SiteMode, SiteType
-from website_architect.serializers.json import JsonSerializer
+from structio.cli import main
+from structio.domain.enums import SiteMode, SiteType
+from structio.serializers.json import JsonSerializer
 
 
 def test_cli_generate_outputs_json(
@@ -13,7 +13,7 @@ def test_cli_generate_outputs_json(
     monkeypatch.setattr(
         "sys.argv",
         [
-            "website-architect",
+            "structio",
             "generate",
             "--type",
             "ecommerce",
@@ -44,7 +44,7 @@ def test_cli_generate_output_is_deserializable(
     monkeypatch.setattr(
         "sys.argv",
         [
-            "website-architect",
+            "structio",
             "generate",
             "--type",
             "agency",
@@ -78,7 +78,7 @@ def test_cli_generate_writes_output_file(
     monkeypatch.setattr(
         "sys.argv",
         [
-            "website-architect",
+            "structio",
             "generate",
             "--type",
             "portfolio",
@@ -119,7 +119,7 @@ def test_cli_generate_output_file_is_valid_json(
     monkeypatch.setattr(
         "sys.argv",
         [
-            "website-architect",
+            "structio",
             "generate",
             "--type",
             "travel",
@@ -151,7 +151,7 @@ def test_cli_help(
     monkeypatch.setattr(
         "sys.argv",
         [
-            "website-architect",
+            "structio",
             "--help",
         ],
     )
@@ -164,7 +164,7 @@ def test_cli_help(
     captured = capsys.readouterr()
 
     assert "generate" in captured.out
-    assert "website-architect" in captured.out
+    assert "structio" in captured.out
 
 
 def test_cli_generate_help(
@@ -174,7 +174,7 @@ def test_cli_generate_help(
     monkeypatch.setattr(
         "sys.argv",
         [
-            "website-architect",
+            "structio",
             "generate",
             "--help",
         ],
@@ -206,12 +206,12 @@ def test_cli_supports_all_combinations(
     site_type: SiteType,
     mode: SiteMode,
 ) -> None:
-    from website_architect.cli import main
+    from structio.cli import main
 
     monkeypatch.setattr(
         "sys.argv",
         [
-            "website-architect",
+            "structio",
             "generate",
             "--type",
             site_type.value,

@@ -1,8 +1,8 @@
 import pytest
 
-from website_architect.catalog.definitions import LinkRule
-from website_architect.domain.enums import LinkType
-from website_architect.generator.graph_builder import GraphBuilder
+from structio.catalog.definitions import LinkRule
+from structio.domain.enums import LinkType
+from structio.generator.graph_builder import GraphBuilder
 
 
 def test_graph_builder_resolves_root_nodes() -> None:

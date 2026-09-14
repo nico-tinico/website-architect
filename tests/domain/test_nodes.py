@@ -1,8 +1,8 @@
 import pytest
 
-from website_architect.domain.enums import NodeType
-from website_architect.domain.nodes import Node
-from website_architect.domain.nodes import PageDefinition
+from structio.domain.enums import NodeType
+from structio.domain.nodes import Node
+from structio.domain.nodes import PageDefinition
 
 
 def make_node(

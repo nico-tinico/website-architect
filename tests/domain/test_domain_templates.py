@@ -1,6 +1,6 @@
 import pytest
 
-from website_architect.domain.templates import Template
+from structio.domain.templates import Template
 
 
 def test_template_is_repeatable() -> None:

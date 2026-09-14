@@ -1,8 +1,8 @@
 import json
 
-from website_architect.domain.enums import SiteMode, SiteType
-from website_architect.generator.generator import ArchitectureGenerator
-from website_architect.serializers.json import JsonSerializer
+from structio.domain.enums import SiteMode, SiteType
+from structio.generator.generator import ArchitectureGenerator
+from structio.serializers.json import JsonSerializer
 
 
 def test_serialize_architecture() -> None:

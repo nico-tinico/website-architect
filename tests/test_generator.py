@@ -1,9 +1,9 @@
-from website_architect.domain.enums import (
+from structio.domain.enums import (
     SiteMode,
     SiteType,
     Topology,
 )
-from website_architect.generator.generator import ArchitectureGenerator
+from structio.generator.generator import ArchitectureGenerator
 
 
 def test_generate_saas_multi_page() -> None:

@@ -1,17 +1,17 @@
 import pytest
 
-from website_architect.domain.architecture import SiteArchitecture
-from website_architect.domain.enums import (
+from structio.domain.architecture import SiteArchitecture
+from structio.domain.enums import (
     LinkType,
     NodeType,
     SiteMode,
     SiteType,
     Topology,
 )
-from website_architect.domain.graph import SiteGraph
-from website_architect.domain.links import Link
-from website_architect.domain.nodes import Node
-from website_architect.domain.templates import Template
+from structio.domain.graph import SiteGraph
+from structio.domain.links import Link
+from structio.domain.nodes import Node
+from structio.domain.templates import Template
 
 
 def make_architecture(

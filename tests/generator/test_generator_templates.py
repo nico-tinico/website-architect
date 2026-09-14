@@ -1,6 +1,6 @@
-from website_architect.catalog.profiles import PROFILES
-from website_architect.domain.enums import NodeType, SiteMode, SiteType
-from website_architect.generator.generator import ArchitectureGenerator
+from structio.catalog.profiles import PROFILES
+from structio.domain.enums import NodeType, SiteMode, SiteType
+from structio.generator.generator import ArchitectureGenerator
 
 
 def test_generated_architecture_contains_templates() -> None:

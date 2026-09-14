@@ -1,5 +1,5 @@
-from website_architect.catalog.profiles import PROFILES
-from website_architect.domain.enums import SiteType, Topology
+from structio.catalog.profiles import PROFILES
+from structio.domain.enums import SiteType, Topology
 
 
 def test_all_site_types_have_profiles() -> None:

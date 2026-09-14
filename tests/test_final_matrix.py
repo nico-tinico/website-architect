@@ -5,9 +5,9 @@ from pathlib import Path
 
 import pytest
 
-from website_architect.domain.enums import SiteMode, SiteType
-from website_architect.generator.generator import ArchitectureGenerator
-from website_architect.serializers.json import JsonSerializer
+from structio.domain.enums import SiteMode, SiteType
+from structio.generator.generator import ArchitectureGenerator
+from structio.serializers.json import JsonSerializer
 
 
 SITE_TYPES = (
@@ -225,7 +225,7 @@ def test_all_site_combinations_cli(
         [
             sys.executable,
             "-m",
-            "website_architect.cli",
+            "structio.cli",
             "generate",
             "--type",
             site_type.value,

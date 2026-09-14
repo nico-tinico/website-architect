@@ -1,7 +1,7 @@
 import pytest
 
-from website_architect.catalog.profiles import PROFILES
-from website_architect.domain.enums import NodeType, SiteType
+from structio.catalog.profiles import PROFILES
+from structio.domain.enums import NodeType, SiteType
 
 
 def collect_nodes(nodes):
