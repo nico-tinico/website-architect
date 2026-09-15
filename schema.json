@@ -1,0 +1,110 @@
+{
+  "version": "1.0",
+  "site": {
+    "type": "portfolio",
+    "mode": "multi_page",
+    "topology": "sequential"
+  },
+  "root_id": "home",
+  "nodes": [
+    {
+      "id": "home",
+      "name": "Home",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": "Website home page.",
+      "parent_id": null,
+      "position": 0
+    },
+    {
+      "id": "home.work",
+      "name": "Work",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": "Present the portfolio owner's projects.",
+      "parent_id": "home",
+      "position": 0
+    },
+    {
+      "id": "home.work.projects",
+      "name": "Projects",
+      "type": "collection",
+      "required": true,
+      "repeatable": false,
+      "purpose": "Organize the portfolio's individual projects.",
+      "parent_id": "home.work",
+      "position": 0,
+      "item_template": "project"
+    },
+    {
+      "id": "home.project",
+      "name": "Project",
+      "type": "entry_point",
+      "required": true,
+      "repeatable": false,
+      "purpose": "Provide direct access to individual portfolio project pages.",
+      "parent_id": "home",
+      "position": 1,
+      "target_template": "project"
+    },
+    {
+      "id": "home.about",
+      "name": "About",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": "Present the portfolio owner's background, identity, and professional positioning.",
+      "parent_id": "home",
+      "position": 2
+    },
+    {
+      "id": "home.contact",
+      "name": "Contact",
+      "type": "page",
+      "required": true,
+      "repeatable": false,
+      "purpose": "Provide a way to contact the portfolio owner.",
+      "parent_id": "home",
+      "position": 3
+    }
+  ],
+  "templates": [
+    {
+      "id": "project",
+      "name": "Project",
+      "type": "template",
+      "required": true,
+      "repeatable": true,
+      "purpose": "Present an individual portfolio project, including its context, role, process, and outcome."
+    }
+  ],
+  "links": [
+    {
+      "source": "home",
+      "target": "home.work",
+      "type": "navigation"
+    },
+    {
+      "source": "home",
+      "target": "home.about",
+      "type": "navigation"
+    },
+    {
+      "source": "home",
+      "target": "home.contact",
+      "type": "navigation"
+    },
+    {
+      "source": "home.work",
+      "target": "home.project",
+      "type": "navigation"
+    },
+    {
+      "source": "home.project",
+      "target": "home.contact",
+      "type": "cta"
+    }
+  ]
+}

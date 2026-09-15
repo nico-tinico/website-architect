@@ -92,6 +92,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
 _BLUE = "#3a96dd"
 _RED = "#e74856"
+_GREEN = "#00CF00"
 _GRAY = "#7f7f7f"
 _WHITE = "#FFFFFF"
 
@@ -99,20 +100,17 @@ _WHITE = "#FFFFFF"
 def _render_main_help() -> None:
     version = _project_version()
 
-    header = f"""[{_RED}]███████╗████████╗██████╗ ██╗   ██╗ ██████╗████████╗██╗ ██████╗ 
-██╔════╝╚══██╔══╝██╔══██╗██║   ██║██╔════╝╚══██╔══╝██║██╔═══██╗
-███████╗   ██║   ██████╔╝██║   ██║██║        ██║   ██║██║   ██║
-╚════██║   ██║   ██╔══██╗██║   ██║██║        ██║   ██║██║   ██║
-███████║   ██║   ██║  ██║╚██████╔╝╚██████╗   ██║   ██║╚██████╔╝
-╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝  ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ [/{_RED}]
+    header = f"""[{_RED}]┏┓┏┳┓┳┓┳┳┏┓┏┳┓ ┳┏┓
+┗┓ ┃ ┣┫┃┃┃  ┃  ┃┃┃
+┗┛ ┻ ┛┗┗┛┗┛ ┻ •┻┗┛[/{_RED}]
 
 [{_WHITE}]Structio — Web architecture engineering[/{_WHITE}]
 [{_GRAY}]v{version} · https://github.com/nico-tinico/structio[/{_GRAY}]
 """
 
-    table = Table(box=None, show_header=True, header_style=_GRAY, padding=0)
+    table = Table(box=None, show_header=True, header_style=_WHITE, padding=0)
     
-    table.add_column("COMMAND", style=_BLUE)
+    table.add_column("Commands  ", style=_BLUE)
     table.add_column(style=_WHITE)
 
     rows = [
@@ -201,17 +199,53 @@ def _generate(
     )
 
     if output is None:
-        print(serializer.serialize(architecture))
-        return 0
+        json = (serializer.serialize(architecture))
 
-    serializer.save(
-        architecture,
-        output,
-    )
+        result = f"""\n[{_GRAY}]{json}[/{_GRAY}]"""
+    else:
+        serializer.save(
+            architecture,
+            output,
+        )
 
+        result = f"""\nGenerating the structure...\n\n[{_GREEN}]✓ written to {output}[/{_GREEN}]"""
+
+    header = f"""[{_RED}]┏┓┏┳┓┳┓┳┳┏┓┏┳┓ ┳┏┓
+┗┓ ┃ ┣┫┃┃┃  ┃  ┃┃┃
+┗┛ ┻ ┛┗┗┛┗┛ ┻ •┻┗┛[/{_RED}]
+"""
+
+    table = Table(box=None, show_header=True, header_style=_WHITE, padding=0)
+    
+    table.add_column("Configuration", style=_WHITE)
+    table.add_column(style=_GRAY)
+
+    rows = [
+        ("", ""),
+        (
+            Padding(f"[{_GREEN}]✓[/{_GREEN}] Type", (0, 4, 0, 0)),
+            f"← {site_type}"
+        ),
+        (
+            Padding(f"[{_GREEN}]✓[/{_GREEN}] Mode", (0, 4, 0, 0)),
+            f"← {mode}"
+        ),
+    ]
+
+    for row in rows:
+
+        table.add_row(*row)
+
+    console.clear()
     console.print(
-        Text(f"Architecture written to {output}", style="bold green"),
-        soft_wrap=True,
+        Padding(
+            Group(
+                header,
+                table,
+                result
+            ),
+            (1, 2)
+        )
     )
 
     return 0
